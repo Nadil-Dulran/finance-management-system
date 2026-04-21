@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "476845779069",
+    "project_id": "financemanagementsystem-sliit",
+    "storage_bucket": "financemanagementsystem-sliit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476845779069:android:070dbaa015f148bc002914",
+        "android_client_info": {
+          "package_name": "com.example.finance_management_system"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOnjBOn7DJ3MNGwNone1bbkwi2Dy4UeUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

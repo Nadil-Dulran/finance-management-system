@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services")
 }
 android {
     namespace = "com.example.finance_management_system"
@@ -43,6 +44,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    // Firebase BOM (VERY IMPORTANT)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
     // Firebase
     implementation("com.google.firebase:firebase-auth-ktx")

@@ -8,7 +8,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.my_financialtracker.R
+import com.example.finance_management_system.R
 
 sealed class AppDestination(val route: String) {
     data object Login : AppDestination("login")

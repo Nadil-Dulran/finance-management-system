@@ -1,4 +1,4 @@
-package com.example.my_financialtracker.ui.state
+package com.example.finance_management_system.ui.state
 
 data class AuthUiState(
     val name: String = "",

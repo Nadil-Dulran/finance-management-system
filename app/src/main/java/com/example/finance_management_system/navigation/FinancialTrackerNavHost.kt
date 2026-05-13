@@ -19,6 +19,7 @@ import com.example.finance_management_system.ui.screens.goal.GoalScreen
 import com.example.finance_management_system.ui.screens.profile.ProfileScreen
 import com.example.finance_management_system.ui.screens.settings.SettingsScreen
 import com.example.finance_management_system.ui.screens.transactions.TransactionsScreen
+import com.example.finance_management_system.ui.screens.transactions.RecurringBillsScreen
 import com.example.finance_management_system.viewmodel.AddExpenseViewModel
 import com.example.finance_management_system.viewmodel.AddIncomeViewModel
 import com.example.finance_management_system.viewmodel.AuthViewModel
@@ -27,6 +28,7 @@ import com.example.finance_management_system.viewmodel.GoalViewModel
 import com.example.finance_management_system.viewmodel.ProfileViewModel
 import com.example.finance_management_system.viewmodel.SettingsViewModel
 import com.example.finance_management_system.viewmodel.TransactionsViewModel
+import com.example.finance_management_system.viewmodel.RecurringBillsViewModel
 
 @Composable
 fun FinancialTrackerNavHost(navController: NavHostController) {
@@ -103,6 +105,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
                 onAddIncomeClick = { navController.navigate(AppDestination.AddIncome.route) },
                 onAddExpenseClick = { navController.navigate(AppDestination.AddExpense.route) },
                 onTransactionsClick = { navController.navigate(AppDestination.Transactions.route) },
+                onRecurringBillsClick = { navController.navigate(AppDestination.RecurringBills.route) },
                 onGoalClick = { navController.navigate(AppDestination.Goal.route) },
                 onSettingsClick = { navController.navigate(AppDestination.Profile.route) },
                 onBottomNavClick = { route ->
@@ -191,6 +194,24 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
                     }
                 },
                 currentRoute = AppDestination.Transactions.route,
+            )
+        }
+
+        composable(AppDestination.RecurringBills.route) {
+            val viewModel: RecurringBillsViewModel = viewModel()
+            val bills = viewModel.recurringBills.collectAsStateWithLifecycle().value
+            RecurringBillsScreen(
+                bills = bills,
+                onUpdateBill = viewModel::updateSubscription,
+                onDeleteBill = viewModel::deleteSubscription,
+                onAddExpenseClick = { navController.navigate(AppDestination.AddExpense.route) },
+                onAddIncomeClick = { navController.navigate(AppDestination.AddIncome.route) },
+                onBottomNavClick = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                    }
+                },
+                currentRoute = AppDestination.RecurringBills.route,
             )
         }
 

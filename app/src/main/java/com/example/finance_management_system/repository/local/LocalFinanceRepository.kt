@@ -286,6 +286,26 @@ class LocalFinanceRepository(
         }
     }
 
+    override fun observeRecurringExpenses(): Flow<List<TransactionItem>> {
+        return scopedFinanceData { _, expenses, _, preferredCurrency, rates ->
+            expenses.filter { it.isRecurringTemplate }.map {
+                TransactionItem(
+                    id = it.id,
+                    type = TransactionType.EXPENSE,
+                    title = it.category,
+                    amountLabel = formatDisplayCurrency(it.amountLkr, preferredCurrency, rates),
+                    meta = "${it.recurrenceType} billing",
+                    originalAmount = it.originalAmount,
+                    originalCurrency = it.originalCurrency,
+                    spendingType = it.spendingType,
+                    recurrenceType = it.recurrenceType,
+                    paymentMethod = it.paymentMethod,
+                    note = it.note,
+                )
+            }
+        }
+    }
+
     override fun observeDetectedTransactions(): Flow<List<DetectedTransactionItem>> {
         return authSessionManager.currentUser.flatMapLatest { user ->
             if (user == null) {
@@ -544,6 +564,7 @@ class LocalFinanceRepository(
                 val updated = existing.copy(
                     category = transaction.title,
                     spendingType = transaction.spendingType ?: existing.spendingType,
+                    recurrenceType = transaction.recurrenceType ?: existing.recurrenceType,
                     originalCurrency = transaction.originalCurrency,
                     originalAmount = transaction.originalAmount,
                     amountLkr = CurrencyConverter.toLkr(transaction.originalAmount, transaction.originalCurrency, rateToLkr),

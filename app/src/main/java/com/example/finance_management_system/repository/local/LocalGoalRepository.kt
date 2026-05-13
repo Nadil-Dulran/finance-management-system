@@ -1,5 +1,6 @@
 package com.example.finance_management_system.repository.local
 
+import android.util.Log
 import com.example.finance_management_system.data.currency.CurrencyConverter
 import com.example.finance_management_system.data.currency.ExchangeRateRepository
 import com.example.finance_management_system.data.local.dao.GoalDao
@@ -9,10 +10,14 @@ import com.example.finance_management_system.data.remote.FirestoreSyncService
 import com.example.finance_management_system.data.session.AuthSessionManager
 import com.example.finance_management_system.model.GoalOverview
 import com.example.finance_management_system.repository.GoalRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.UUID
 import kotlin.math.abs
@@ -25,6 +30,11 @@ class LocalGoalRepository(
     private val authSessionManager: AuthSessionManager,
     private val syncService: FirestoreSyncService,
 ) : GoalRepository {
+    private val syncScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private companion object {
+        const val TAG = "LocalGoalRepository"
+    }
 
     override fun observePrimaryGoal(): Flow<GoalOverview?> {
         return authSessionManager.currentUser.flatMapLatest { user ->
@@ -84,7 +94,7 @@ class LocalGoalRepository(
             createdAt = System.currentTimeMillis(),
         )
         goalDao.upsert(goal)
-        runCatching { syncService.pushGoal(userId, goal) }
+        launchSync { syncService.pushGoal(userId, goal) }
     }
 
     override suspend fun updateGoal(
@@ -109,14 +119,14 @@ class LocalGoalRepository(
             deadlineAt = monthsFromNow(monthsToDeadline),
         )
         goalDao.upsert(updated)
-        runCatching { syncService.pushGoal(userId, updated) }
+        launchSync { syncService.pushGoal(userId, updated) }
     }
 
     override suspend fun deleteGoal(goalId: String): Result<Unit> = runCatching {
         val userId = authSessionManager.currentUserValue?.uid ?: error("No signed-in user.")
         val goal = goalDao.getGoalById(goalId, userId) ?: error("Goal not found.")
         goalDao.delete(goal)
-        runCatching { syncService.deleteGoal(userId, goalId) }
+        launchSync { syncService.deleteGoal(userId, goalId) }
     }
 
     override suspend fun applyEmergencyWithdrawal(goalId: String, amount: Double): Result<Unit> = runCatching {
@@ -130,7 +140,7 @@ class LocalGoalRepository(
             emergencyUsedLkr = goal.emergencyUsedLkr + amount,
         )
         goalDao.upsert(updated)
-        runCatching { syncService.pushGoal(userId, updated) }
+        launchSync { syncService.pushGoal(userId, updated) }
     }
 
     override suspend fun refreshGoalContributionsIfNeeded() {
@@ -154,7 +164,7 @@ class LocalGoalRepository(
                     lastContributionAt = now.timeInMillis,
                 )
                 goalDao.upsert(updated)
-                runCatching { syncService.pushGoal(userId, updated) }
+                launchSync { syncService.pushGoal(userId, updated) }
             }
         }
     }
@@ -171,7 +181,7 @@ class LocalGoalRepository(
         }
         legacyGoals.forEach { goal ->
             goalDao.delete(goal)
-            runCatching { syncService.deleteGoal(userId, goal.id) }
+            launchSync { syncService.deleteGoal(userId, goal.id) }
         }
     }
 
@@ -232,5 +242,12 @@ class LocalGoalRepository(
         val rateToLkr = rates[preferredCurrency.uppercase()] ?: 1.0
         val converted = CurrencyConverter.fromLkr(amountLkr, rateToLkr)
         return CurrencyConverter.format(converted, preferredCurrency)
+    }
+
+    private fun launchSync(block: suspend () -> Unit) {
+        syncScope.launch {
+            runCatching { block() }
+                .onFailure { throwable -> Log.w(TAG, "Firestore sync failed", throwable) }
+        }
     }
 }

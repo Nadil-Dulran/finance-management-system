@@ -9,6 +9,7 @@ import com.example.finance_management_system.data.local.entity.IncomeEntity
 import com.example.finance_management_system.data.remote.model.FirestoreExpense
 import com.example.finance_management_system.data.remote.model.FirestoreGoal
 import com.example.finance_management_system.data.remote.model.FirestoreIncome
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -20,9 +21,11 @@ class FirestoreSyncService(
 ) {
 
     suspend fun syncUserData(userId: String) {
+        Log.d(TAG, "Starting full user sync for uid=$userId")
         syncIncome(userId)
         syncExpenses(userId)
         syncGoals(userId)
+        Log.d(TAG, "Completed full user sync for uid=$userId")
     }
 
     suspend fun pushIncome(userId: String, entity: IncomeEntity) {
@@ -79,12 +82,18 @@ class FirestoreSyncService(
             doc.toObject(FirestoreIncome::class.java)?.copy(id = doc.id)
         }
 
-        if (remote.isEmpty()) {
-            incomeDao.getAll(userId).forEach { entity ->
-                collection.document(entity.id).set(entity.toFirestore()).await()
-            }
-        } else {
+        Log.d(TAG, "syncIncome: remoteCount=${remote.size} for uid=$userId")
+
+        // Upsert remote to local
+        if (remote.isNotEmpty()) {
             incomeDao.upsertAll(remote.map { it.toEntity(userId) })
+        }
+
+        // Upload any local entries missing remotely
+        val remoteIds = remote.map { it.id }.toSet()
+        incomeDao.getAll(userId).filter { it.id !in remoteIds }.forEach { entity ->
+            Log.d(TAG, "syncIncome: uploading missing local income id=${entity.id}")
+            collection.document(entity.id).set(entity.toFirestore()).await()
         }
     }
 
@@ -94,12 +103,16 @@ class FirestoreSyncService(
             doc.toObject(FirestoreExpense::class.java)?.copy(id = doc.id)
         }
 
-        if (remote.isEmpty()) {
-            expenseDao.getAll(userId).forEach { entity ->
-                collection.document(entity.id).set(entity.toFirestore()).await()
-            }
-        } else {
+        Log.d(TAG, "syncExpenses: remoteCount=${remote.size} for uid=$userId")
+
+        if (remote.isNotEmpty()) {
             expenseDao.upsertAll(remote.map { it.toEntity(userId) })
+        }
+
+        val remoteIds = remote.map { it.id }.toSet()
+        expenseDao.getAll(userId).filter { it.id !in remoteIds }.forEach { entity ->
+            Log.d(TAG, "syncExpenses: uploading missing local expense id=${entity.id}")
+            collection.document(entity.id).set(entity.toFirestore()).await()
         }
     }
 
@@ -109,12 +122,16 @@ class FirestoreSyncService(
             doc.toObject(FirestoreGoal::class.java)?.copy(id = doc.id)
         }
 
-        if (remote.isEmpty()) {
-            goalDao.getAllGoals(userId).forEach { goal ->
-                collection.document(goal.id).set(goal.toFirestore()).await()
-            }
-        } else {
+        Log.d(TAG, "syncGoals: remoteCount=${remote.size} for uid=$userId")
+
+        if (remote.isNotEmpty()) {
             goalDao.upsertAll(remote.map { it.toEntity(userId) })
+        }
+
+        val remoteIds = remote.map { it.id }.toSet()
+        goalDao.getAllGoals(userId).filter { it.id !in remoteIds }.forEach { goal ->
+            Log.d(TAG, "syncGoals: uploading missing local goal id=${goal.id}")
+            collection.document(goal.id).set(goal.toFirestore()).await()
         }
     }
 
@@ -125,6 +142,7 @@ class FirestoreSyncService(
         const val COLLECTION_INCOME = "income_entries"
         const val COLLECTION_EXPENSES = "expense_entries"
         const val COLLECTION_GOALS = "goals"
+        const val TAG = "FirestoreSyncService"
     }
 }
 

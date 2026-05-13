@@ -1,5 +1,6 @@
 package com.example.finance_management_system.repository.local
 
+import android.util.Log
 import com.example.finance_management_system.data.currency.CurrencyConverter
 import com.example.finance_management_system.data.currency.ExchangeRateRepository
 import com.example.finance_management_system.data.local.dao.DetectedTransactionDao
@@ -20,11 +21,15 @@ import com.example.finance_management_system.model.SummaryCard
 import com.example.finance_management_system.model.TransactionItem
 import com.example.finance_management_system.model.TransactionType
 import com.example.finance_management_system.repository.FinanceRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.UUID
 import kotlin.math.abs
@@ -40,6 +45,11 @@ class LocalFinanceRepository(
     private val authSessionManager: AuthSessionManager,
     private val syncService: FirestoreSyncService,
 ) : FinanceRepository {
+    private val syncScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private companion object {
+        const val TAG = "LocalFinanceRepository"
+    }
 
     override fun observeDashboardSummary(): Flow<List<SummaryCard>> {
         return scopedFinanceData { incomes, expenses, goals, preferredCurrency, rates ->
@@ -343,7 +353,7 @@ class LocalFinanceRepository(
             createdAt = now,
         )
         incomeDao.upsert(entity)
-        runCatching { syncService.pushIncome(userId, entity) }
+        launchSync { syncService.pushIncome(userId, entity) }
     }
 
     override suspend fun addExpense(
@@ -378,7 +388,7 @@ class LocalFinanceRepository(
                 createdAt = now,
             )
             expenseDao.upsert(entity)
-            runCatching { syncService.pushExpense(userId, entity) }
+            launchSync { syncService.pushExpense(userId, entity) }
         } else {
             val groupId = "recurring_${UUID.randomUUID()}"
             val template = ExpenseEntity(
@@ -404,7 +414,7 @@ class LocalFinanceRepository(
                 isRecurringTemplate = false,
             )
             expenseDao.upsertAll(listOf(template, firstOccurrence))
-            runCatching {
+            launchSync {
                 syncService.pushExpense(userId, template)
                 syncService.pushExpense(userId, firstOccurrence)
             }
@@ -526,7 +536,7 @@ class LocalFinanceRepository(
                     note = transaction.note,
                 )
                 incomeDao.upsert(updated)
-                runCatching { syncService.pushIncome(userId, updated) }
+                launchSync { syncService.pushIncome(userId, updated) }
             }
             TransactionType.EXPENSE -> {
                 val existing = expenseDao.getById(transaction.id, userId) ?: error("Expense not found.")
@@ -541,7 +551,7 @@ class LocalFinanceRepository(
                     note = transaction.note,
                 )
                 expenseDao.upsert(updated)
-                runCatching { syncService.pushExpense(userId, updated) }
+                launchSync { syncService.pushExpense(userId, updated) }
             }
             TransactionType.GOAL_TRANSFER -> error("Automatic goal reserve entries cannot be edited here.")
         }
@@ -553,12 +563,12 @@ class LocalFinanceRepository(
             TransactionType.INCOME -> {
                 val existing = incomeDao.getById(transaction.id, userId) ?: error("Income not found.")
                 incomeDao.delete(existing)
-                runCatching { syncService.deleteIncome(userId, transaction.id) }
+                launchSync { syncService.deleteIncome(userId, transaction.id) }
             }
             TransactionType.EXPENSE -> {
                 val existing = expenseDao.getById(transaction.id, userId) ?: error("Expense not found.")
                 expenseDao.delete(existing)
-                runCatching { syncService.deleteExpense(userId, transaction.id) }
+                launchSync { syncService.deleteExpense(userId, transaction.id) }
             }
             TransactionType.GOAL_TRANSFER -> error("Automatic goal reserve entries cannot be deleted here.")
         }
@@ -610,5 +620,12 @@ class LocalFinanceRepository(
                 expense.note.equals("Monthly rent", ignoreCase = true)
         val matchesAmount = abs(expense.originalAmount - 34_000.0) < 0.01
         return matchesRentProfile && matchesAmount
+    }
+
+    private fun launchSync(block: suspend () -> Unit) {
+        syncScope.launch {
+            runCatching { block() }
+                .onFailure { throwable -> Log.w(TAG, "Firestore sync failed", throwable) }
+        }
     }
 }

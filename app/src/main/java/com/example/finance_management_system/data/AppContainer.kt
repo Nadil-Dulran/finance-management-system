@@ -15,6 +15,8 @@ import com.example.finance_management_system.repository.firebase.FirebaseAuthRep
 import com.example.finance_management_system.repository.local.LocalFinanceRepository
 import com.example.finance_management_system.repository.local.LocalGoalRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.example.finance_management_system.repository.AuthUser
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,6 +32,23 @@ object AppContainer {
 
     fun initialize(application: Application) {
         appContext = application.applicationContext
+    }
+
+    // Ensure that if Firebase already has an authenticated user (app restart),
+    // we populate the in-app `AuthSessionManager` and trigger an initial sync.
+    fun ensureAuthSessionInitialized() {
+        val current = firebaseAuth.currentUser ?: return
+        authSessionManager.setCurrentUser(
+            AuthUser(
+                uid = current.uid,
+                displayName = current.displayName ?: current.email.orEmpty(),
+                email = current.email.orEmpty(),
+            ),
+        )
+
+        applicationScope.launch {
+            runCatching { firestoreSyncService.syncUserData(current.uid) }
+        }
     }
 
     fun runDeferredStartupWork() {

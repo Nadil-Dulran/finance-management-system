@@ -7,5 +7,6 @@ class MyFinancialTrackerApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         AppContainer.initialize(this)
+        AppContainer.ensureAuthSessionInitialized()
     }
 }

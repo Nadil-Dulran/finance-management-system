@@ -77,6 +77,20 @@ class FirebaseAuthRepository(
         }
     }
 
+    override suspend fun sendPasswordReset(email: String): Result<Unit> {
+        return runCatching {
+            val normalizedEmail = email.trim()
+            withTimeout(AUTH_TIMEOUT_MS) {
+                firebaseAuth
+                    .sendPasswordResetEmail(normalizedEmail)
+                    .awaitTask("sendPasswordReset")
+            }
+            Unit
+        }.recoverCatching { throwable ->
+            throw mapAuthException("sendPasswordReset", throwable)
+        }
+    }
+
     private suspend fun loginWithFirebase(email: String, password: String): AuthUser {
         val result = withTimeout(AUTH_TIMEOUT_MS) {
             firebaseAuth

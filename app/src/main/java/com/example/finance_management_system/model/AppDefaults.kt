@@ -24,6 +24,10 @@ object AppDefaults {
     const val ERROR_TRANSACTION_DELETE = "Could not delete transaction."
     const val ERROR_SIGN_IN = "Sign in failed."
     const val ERROR_REGISTER = "Registration failed."
+    const val ERROR_RESET_PASSWORD = "Could not send reset email."
+    const val ERROR_RESET_PASSWORD_EMAIL_REQUIRED = "Enter your account email first."
+    const val SUCCESS_RESET_PASSWORD =
+        "Password reset email sent. Check your inbox and spam folder."
     const val ERROR_AUTH_TIMEOUT =
         "Authentication timed out. Please check your connection and try again."
     const val ERROR_AUTH_NETWORK =

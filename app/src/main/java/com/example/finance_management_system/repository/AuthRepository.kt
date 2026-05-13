@@ -9,4 +9,5 @@ data class AuthUser(
 interface AuthRepository {
     suspend fun login(email: String, password: String): Result<AuthUser>
     suspend fun register(name: String, email: String, password: String): Result<AuthUser>
+    suspend fun sendPasswordReset(email: String): Result<Unit>
 }

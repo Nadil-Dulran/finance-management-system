@@ -32,6 +32,10 @@
     <string name="login_headline">Track money with clarity</string>
     <string name="login_copy">Keep income, expenses, and goal progress in one simple flow.</string>
     <string name="login_footer">Secure sign-in keeps your personal finance data tied to your own account.</string>
+    <string name="reset_password_title">Reset Password</string>
+    <string name="reset_password_headline">Recover your account access</string>
+    <string name="reset_password_copy">We will send a secure password reset link to the email tied to your account.</string>
+    <string name="reset_password_instructions">Enter your account email and we will send a reset link.</string>
     <string name="register_title">Create Account</string>
     <string name="register_headline">Start your finance system</string>
     <string name="goal_title">Savings Goal</string>
@@ -64,7 +68,9 @@
     <string name="field_payment_method">Payment Method</string>
     <string name="password_toggle">Toggle password visibility</string>
     <string name="button_sign_in">Sign In</string>
+    <string name="button_forgot_password">Forgot Password?</string>
     <string name="button_create_account">Create Account</string>
+    <string name="button_send_reset_link">Send Reset Link</string>
     <string name="button_back_to_sign_in">Back to Sign In</string>
     <string name="button_back">Back</string>
     <string name="button_save">Save</string>

@@ -13,6 +13,7 @@ import com.example.finance_management_system.R
 sealed class AppDestination(val route: String) {
     data object Login : AppDestination("login")
     data object Register : AppDestination("register")
+    data object ResetPassword : AppDestination("reset_password")
     data object Dashboard : AppDestination("dashboard")
     data object AddIncome : AppDestination("add_income")
     data object AddExpense : AppDestination("add_expense")

@@ -23,7 +23,8 @@ class GoalViewModel(
     init {
         viewModelScope.launch {
             runCatching { repository.refreshGoalContributionsIfNeeded() }
-            runCatching { localGoalRepository?.cleanupLegacyDemoGoals() }
+            // Legacy demo cleanup disabled to avoid accidental deletions on startup.
+            // runCatching { localGoalRepository?.cleanupLegacyDemoGoals() }
         }
     }
 

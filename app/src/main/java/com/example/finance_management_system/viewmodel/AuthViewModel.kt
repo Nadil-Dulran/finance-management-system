@@ -27,21 +27,21 @@ class AuthViewModel(
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
     fun updateName(value: String) {
-        _uiState.update { it.copy(name = value, errorMessage = null) }
+        _uiState.update { it.copy(name = value, errorMessage = null, successMessage = null) }
     }
 
     fun updateEmail(value: String) {
-        _uiState.update { it.copy(email = value, errorMessage = null) }
+        _uiState.update { it.copy(email = value, errorMessage = null, successMessage = null) }
     }
 
     fun updatePassword(value: String) {
-        _uiState.update { it.copy(password = value, errorMessage = null) }
+        _uiState.update { it.copy(password = value, errorMessage = null, successMessage = null) }
     }
 
     fun login(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val state = _uiState.value
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             repository.login(state.email, state.password)
                 .onSuccess { user ->
                     runCatching { syncService.syncUserData(user.uid) }
@@ -56,6 +56,7 @@ class AuthViewModel(
                         it.copy(
                             isLoading = false,
                             errorMessage = throwable.message ?: AppDefaults.ERROR_SIGN_IN,
+                            successMessage = null,
                         )
                     }
                 }
@@ -65,7 +66,7 @@ class AuthViewModel(
     fun register(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val state = _uiState.value
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             repository.register(state.name, state.email, state.password)
                 .onSuccess { user ->
                     runCatching { syncService.syncUserData(user.uid) }
@@ -80,6 +81,43 @@ class AuthViewModel(
                         it.copy(
                             isLoading = false,
                             errorMessage = throwable.message ?: AppDefaults.ERROR_REGISTER,
+                            successMessage = null,
+                        )
+                    }
+                }
+        }
+    }
+
+    fun sendPasswordReset() {
+        viewModelScope.launch {
+            val email = _uiState.value.email.trim()
+            if (email.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = AppDefaults.ERROR_RESET_PASSWORD_EMAIL_REQUIRED,
+                        successMessage = null,
+                    )
+                }
+                return@launch
+            }
+
+            _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
+            repository.sendPasswordReset(email)
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            successMessage = AppDefaults.SUCCESS_RESET_PASSWORD,
+                            errorMessage = null,
+                        )
+                    }
+                }
+                .onFailure { throwable ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = throwable.message ?: AppDefaults.ERROR_RESET_PASSWORD,
+                            successMessage = null,
                         )
                     }
                 }

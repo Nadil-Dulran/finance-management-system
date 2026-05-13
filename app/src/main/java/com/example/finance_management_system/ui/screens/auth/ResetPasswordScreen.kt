@@ -8,35 +8,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material.icons.outlined.Visibility
-import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.finance_management_system.R
 import com.example.finance_management_system.ui.components.AppScaffold
@@ -45,18 +31,14 @@ import com.example.finance_management_system.ui.components.GradientHeroCard
 import com.example.finance_management_system.ui.state.AuthUiState
 
 @Composable
-fun LoginScreen(
+fun ResetPasswordScreen(
     uiState: AuthUiState,
     onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onLogin: () -> Unit,
-    onForgotPasswordClick: () -> Unit,
-    onRegisterClick: () -> Unit,
+    onSendReset: () -> Unit,
+    onBackToLogin: () -> Unit,
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
-
     AppScaffold(
-        title = stringResource(R.string.login_title),
+        title = stringResource(R.string.reset_password_title),
         currentRoute = null,
         showBottomBar = false,
         showTopBar = false,
@@ -69,15 +51,15 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             GradientHeroCard(
-                eyebrow = "FLOWLEDGER",
-                title = stringResource(R.string.login_headline),
-                amount = "Secure Sign In",
-                subtitle = stringResource(R.string.login_copy),
+                eyebrow = "ACCOUNT RECOVERY",
+                title = stringResource(R.string.reset_password_headline),
+                amount = "Reset Access",
+                subtitle = stringResource(R.string.reset_password_copy),
                 modifier = Modifier.fillMaxWidth(),
                 accent = {
                     FrostedBadge(
-                        text = "Private",
-                        icon = Icons.Outlined.Lock,
+                        text = "Email Link",
+                        icon = Icons.Outlined.MailOutline,
                     )
                 },
             )
@@ -90,18 +72,16 @@ fun LoginScreen(
                     modifier = Modifier.padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(
-                            text = stringResource(R.string.login_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                        Text(
-                            text = stringResource(R.string.login_footer),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.reset_password_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        text = stringResource(R.string.reset_password_instructions),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
 
                     OutlinedTextField(
                         value = uiState.email,
@@ -110,34 +90,6 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                     )
-                    OutlinedTextField(
-                        value = uiState.password,
-                        onValueChange = onPasswordChange,
-                        label = { Text(stringResource(R.string.field_password)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(
-                                    imageVector = if (passwordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                                    contentDescription = stringResource(R.string.password_toggle),
-                                )
-                            }
-                        },
-                    )
-
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.CenterEnd,
-                    ) {
-                        TextButton(
-                            onClick = onForgotPasswordClick,
-                            enabled = !uiState.isLoading,
-                        ) {
-                            Text(stringResource(R.string.button_forgot_password))
-                        }
-                    }
 
                     uiState.errorMessage?.let { message ->
                         Box(
@@ -176,7 +128,7 @@ fun LoginScreen(
                     }
 
                     Button(
-                        onClick = onLogin,
+                        onClick = onSendReset,
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !uiState.isLoading,
                     ) {
@@ -187,36 +139,17 @@ fun LoginScreen(
                                 color = MaterialTheme.colorScheme.onPrimary,
                             )
                         } else {
-                            Text(stringResource(R.string.button_sign_in))
+                            Text(stringResource(R.string.button_send_reset_link))
                         }
                     }
+
                     OutlinedButton(
-                        onClick = onRegisterClick,
+                        onClick = onBackToLogin,
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !uiState.isLoading,
                     ) {
-                        Text(stringResource(R.string.button_create_account))
+                        Text(stringResource(R.string.button_back_to_sign_in))
                     }
-                }
-            }
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Color(0xFF0E1730),
-                            shape = CircleShape,
-                        )
-                        .padding(horizontal = 14.dp, vertical = 8.dp),
-                ) {
-                    Text(
-                        text = "Your data stays tied to your own account",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.White.copy(alpha = 0.88f),
-                    )
                 }
             }
         }

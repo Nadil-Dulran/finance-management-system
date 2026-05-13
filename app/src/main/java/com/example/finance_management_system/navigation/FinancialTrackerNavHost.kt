@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import com.example.finance_management_system.ui.screens.addexpense.AddExpenseScreen
 import com.example.finance_management_system.ui.screens.addincome.AddIncomeScreen
 import com.example.finance_management_system.ui.screens.auth.LoginScreen
+import com.example.finance_management_system.ui.screens.auth.ResetPasswordScreen
 import com.example.finance_management_system.ui.screens.auth.RegisterScreen
 import com.example.finance_management_system.ui.screens.dashboard.DashboardScreen
 import com.example.finance_management_system.ui.screens.goal.GoalScreen
@@ -49,6 +50,9 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
                         }
                     }
                 },
+                onForgotPasswordClick = {
+                    navController.navigate(AppDestination.ResetPassword.route)
+                },
                 onRegisterClick = {
                     navController.navigate(AppDestination.Register.route)
                 },
@@ -72,6 +76,19 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
                         }
                     }
                 },
+                onBackToLogin = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        composable(AppDestination.ResetPassword.route) {
+            val viewModel: AuthViewModel = viewModel()
+            val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+            ResetPasswordScreen(
+                uiState = uiState,
+                onEmailChange = viewModel::updateEmail,
+                onSendReset = viewModel::sendPasswordReset,
                 onBackToLogin = {
                     navController.popBackStack()
                 },

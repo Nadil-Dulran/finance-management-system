@@ -80,6 +80,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
+    
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

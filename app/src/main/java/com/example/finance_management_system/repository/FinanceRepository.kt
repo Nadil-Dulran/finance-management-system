@@ -47,4 +47,5 @@ interface FinanceRepository {
     suspend fun ignoreDetectedTransaction(id: String): Result<Unit>
     suspend fun updateTransaction(transaction: TransactionItem): Result<Unit>
     suspend fun deleteTransaction(transaction: TransactionItem): Result<Unit>
+    suspend fun checkAndNotifyUpcomingBills()
 }

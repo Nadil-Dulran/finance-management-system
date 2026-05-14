@@ -123,4 +123,8 @@
     <string name="goal_emergency_withdraw_copy">Use this only when the goal savings need to be pulled back for a real emergency.</string>
     <string name="goal_emergency_amount_field">Emergency amount</string>
     <string name="field_recurrence">Recurrence</string>
+    <string name="nav_recurring">Bills</string>
+    <string name="recurring_bills_title">Recurring Bills</string>
+    <string name="recurring_bills_empty_title">No subscriptions yet</string>
+    <string name="recurring_bills_empty_copy">Track your Netflix, Rent, or Gym memberships by setting an expense as recurring.</string>
 </resources>

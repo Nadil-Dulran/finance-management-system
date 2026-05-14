@@ -11,6 +11,7 @@ interface FinanceRepository {
     fun observeExpenseChart(): Flow<List<ChartDatum>>
     fun observeIncomeChart(): Flow<List<ChartDatum>>
     fun observeRecentTransactions(): Flow<List<TransactionItem>>
+    fun observeRecurringExpenses(): Flow<List<TransactionItem>>
     fun observeDetectedTransactions(): Flow<List<DetectedTransactionItem>>
     suspend fun seedDemoDataIfNeeded()
     suspend fun addIncome(
@@ -46,4 +47,5 @@ interface FinanceRepository {
     suspend fun ignoreDetectedTransaction(id: String): Result<Unit>
     suspend fun updateTransaction(transaction: TransactionItem): Result<Unit>
     suspend fun deleteTransaction(transaction: TransactionItem): Result<Unit>
+    suspend fun checkAndNotifyUpcomingBills()
 }

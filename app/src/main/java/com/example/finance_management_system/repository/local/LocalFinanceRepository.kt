@@ -12,6 +12,7 @@ import com.example.finance_management_system.data.notification.NotificationTrans
 import com.example.finance_management_system.model.DetectedTransactionItem
 import com.example.finance_management_system.data.local.entity.ExpenseEntity
 import com.example.finance_management_system.data.local.entity.IncomeEntity
+import com.example.finance_management_system.data.notification.NotificationHelper
 import com.example.finance_management_system.data.preferences.UserPreferencesRepository
 import com.example.finance_management_system.data.remote.FirestoreSyncService
 import com.example.finance_management_system.data.session.AuthSessionManager
@@ -21,6 +22,7 @@ import com.example.finance_management_system.model.SummaryCard
 import com.example.finance_management_system.model.TransactionItem
 import com.example.finance_management_system.model.TransactionType
 import com.example.finance_management_system.repository.FinanceRepository
+import com.example.finance_management_system.data.AppContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,6 +34,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.UUID
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -283,6 +287,26 @@ class LocalFinanceRepository(
                     }
                 }
                 .take(20)
+        }
+    }
+
+    override fun observeRecurringExpenses(): Flow<List<TransactionItem>> {
+        return scopedFinanceData { _, expenses, _, preferredCurrency, rates ->
+            expenses.filter { it.isRecurringTemplate }.map {
+                TransactionItem(
+                    id = it.id,
+                    type = TransactionType.EXPENSE,
+                    title = it.category,
+                    amountLabel = formatDisplayCurrency(it.amountLkr, preferredCurrency, rates),
+                    meta = "${it.recurrenceType} billing",
+                    originalAmount = it.originalAmount,
+                    originalCurrency = it.originalCurrency,
+                    spendingType = it.spendingType,
+                    recurrenceType = it.recurrenceType,
+                    paymentMethod = it.paymentMethod,
+                    note = it.note,
+                )
+            }
         }
     }
 
@@ -544,6 +568,7 @@ class LocalFinanceRepository(
                 val updated = existing.copy(
                     category = transaction.title,
                     spendingType = transaction.spendingType ?: existing.spendingType,
+                    recurrenceType = transaction.recurrenceType ?: existing.recurrenceType,
                     originalCurrency = transaction.originalCurrency,
                     originalAmount = transaction.originalAmount,
                     amountLkr = CurrencyConverter.toLkr(transaction.originalAmount, transaction.originalCurrency, rateToLkr),
@@ -571,6 +596,37 @@ class LocalFinanceRepository(
                 launchSync { syncService.deleteExpense(userId, transaction.id) }
             }
             TransactionType.GOAL_TRANSFER -> error("Automatic goal reserve entries cannot be deleted here.")
+        }
+    }
+
+    override suspend fun checkAndNotifyUpcomingBills() {
+        val userId = authSessionManager.currentUserValue?.uid ?: return
+        val allExpenses = expenseDao.getAll(userId)
+        val templates = allExpenses.filter { it.isRecurringTemplate && it.recurrenceType != "None" }
+        val now = System.currentTimeMillis()
+        val upcomingThreshold = 48 * 60 * 60 * 1000L // 48 hours
+
+        templates.forEach { template ->
+            val latestOccurrence = allExpenses
+                .filter { !it.isRecurringTemplate && it.recurrenceGroupId == template.id }
+                .maxByOrNull { it.spentAt }
+                ?: return@forEach
+
+            val nextDueAt = nextOccurrenceTime(latestOccurrence.spentAt, template.recurrenceType)
+            val timeUntilDue = nextDueAt - now
+
+            if (timeUntilDue in 0..upcomingThreshold) {
+                val dateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
+                val dueDateLabel = dateFormat.format(nextDueAt)
+                val amountLabel = CurrencyConverter.format(template.originalAmount, template.originalCurrency)
+
+                NotificationHelper.showBillReminder(
+                    context = AppContainer.appContext,
+                    billTitle = template.category,
+                    amountLabel = amountLabel,
+                    dueDateLabel = dueDateLabel
+                )
+            }
         }
     }
 

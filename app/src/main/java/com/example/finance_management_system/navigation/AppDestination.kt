@@ -18,6 +18,7 @@ sealed class AppDestination(val route: String) {
     data object AddIncome : AppDestination("add_income")
     data object AddExpense : AppDestination("add_expense")
     data object Transactions : AppDestination("transactions")
+    data object RecurringBills : AppDestination("recurring_bills")
     data object Goal : AppDestination("goal")
     data object Settings : AppDestination("settings")
     data object Profile : AppDestination("profile")

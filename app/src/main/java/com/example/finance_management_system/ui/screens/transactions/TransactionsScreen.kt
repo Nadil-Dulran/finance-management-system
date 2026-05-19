@@ -79,6 +79,7 @@ fun TransactionsScreen(
         onBottomNavClick = onBottomNavClick,
         onAddIncomeClick = onAddIncomeClick,
         onAddExpenseClick = onAddExpenseClick,
+        showTopBar = false,
     ) { modifier ->
         LazyColumn(
             modifier = modifier.fillMaxSize(),

@@ -17,4 +17,7 @@ interface DetectedTransactionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: DetectedTransactionEntity)
+
+    @Query("DELETE FROM detected_transactions WHERE userId = :userId")
+    suspend fun deleteAllForUser(userId: String)
 }

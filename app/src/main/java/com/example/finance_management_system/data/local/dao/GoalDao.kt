@@ -33,4 +33,7 @@ interface GoalDao {
 
     @Delete
     suspend fun delete(goal: GoalEntity)
+
+    @Query("DELETE FROM goals WHERE userId = :userId")
+    suspend fun deleteAllForUser(userId: String)
 }

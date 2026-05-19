@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.finance_management_system.ui.screens.addexpense.AddExpenseScreen
 import com.example.finance_management_system.ui.screens.addincome.AddIncomeScreen
+import com.example.finance_management_system.ui.screens.auth.LandingScreen
 import com.example.finance_management_system.ui.screens.auth.LoginScreen
 import com.example.finance_management_system.ui.screens.auth.ResetPasswordScreen
 import com.example.finance_management_system.ui.screens.auth.RegisterScreen
@@ -34,8 +35,23 @@ import com.example.finance_management_system.viewmodel.RecurringBillsViewModel
 fun FinancialTrackerNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = AppDestination.Login.route,
+        startDestination = AppDestination.Landing.route,
     ) {
+        composable(AppDestination.Landing.route) {
+            LandingScreen(
+                onGetStartedClick = {
+                    navController.navigate(AppDestination.Login.route) {
+                        popUpTo(AppDestination.Landing.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onLoginClick = {
+                    navController.navigate(AppDestination.Login.route)
+                },
+            )
+        }
+
         composable(AppDestination.Login.route) {
             val viewModel: AuthViewModel = viewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -257,8 +273,15 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
                 },
                 onSignOut = {
                     viewModel.signOut()
-                    navController.navigate(AppDestination.Login.route) {
+                    navController.navigate(AppDestination.Landing.route) {
                         popUpTo(0) { inclusive = true }
+                    }
+                },
+                onDeleteAccount = {
+                    viewModel.deleteAccount {
+                        navController.navigate(AppDestination.Landing.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
                 },
                 onAddIncomeClick = { navController.navigate(AppDestination.AddIncome.route) },

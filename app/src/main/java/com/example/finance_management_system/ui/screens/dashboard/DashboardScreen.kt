@@ -65,8 +65,8 @@ fun DashboardScreen(
                 GradientHeroCard(
                     eyebrow = "STATISTICS",
                     title = "Spending Analysis",
-                    amount = incomeSummary?.amountLabel ?: "LKR 0.00",
-                    subtitle = expenseSummary?.let { "Spent: ${it.amountLabel}" } ?: "Spent: LKR 0.00",
+                    amount = freeCashSummary?.amountLabel ?: "LKR 0.00",
+                    subtitle = incomeSummary?.let { "Income: ${it.amountLabel}" } ?: "Income: LKR 0.00",
                     modifier = Modifier.fillMaxWidth(),
                     accent = {
                         AssistChip(

@@ -46,6 +46,7 @@ fun AddIncomeScreen(
         currentRoute = currentRoute,
         showBottomBar = false,
         onBottomNavClick = onBottomNavClick,
+        showTopBar = false,
     ) { modifier ->
         Column(
             modifier = modifier

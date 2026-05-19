@@ -27,4 +27,7 @@ interface IncomeDao {
 
     @Delete
     suspend fun delete(item: IncomeEntity)
+
+    @Query("DELETE FROM income_entries WHERE userId = :userId")
+    suspend fun deleteAllForUser(userId: String)
 }

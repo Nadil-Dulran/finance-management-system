@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.finance_management_system.R
 
 sealed class AppDestination(val route: String) {
+    data object Landing : AppDestination("landing")
     data object Login : AppDestination("login")
     data object Register : AppDestination("register")
     data object ResetPassword : AppDestination("reset_password")

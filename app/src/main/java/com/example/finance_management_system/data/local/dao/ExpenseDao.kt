@@ -27,4 +27,7 @@ interface ExpenseDao {
 
     @Delete
     suspend fun delete(item: ExpenseEntity)
+
+    @Query("DELETE FROM expense_entries WHERE userId = :userId")
+    suspend fun deleteAllForUser(userId: String)
 }

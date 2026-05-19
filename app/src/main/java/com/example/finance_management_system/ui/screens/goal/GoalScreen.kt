@@ -52,6 +52,7 @@ fun GoalScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var emergencyGoalId by remember { mutableStateOf<String?>(null) }
     var editingGoal by remember { mutableStateOf<GoalOverview?>(null) }
+    var goalPendingDelete by remember { mutableStateOf<GoalOverview?>(null) }
 
     AppScaffold(
         title = stringResource(R.string.goal_title),
@@ -60,6 +61,7 @@ fun GoalScreen(
         onBottomNavClick = onBottomNavClick,
         onAddIncomeClick = onAddIncomeClick,
         onAddExpenseClick = onAddExpenseClick,
+        showTopBar = false,
     ) { modifier ->
         LazyColumn(
             modifier = modifier.fillMaxSize(),
@@ -147,7 +149,7 @@ fun GoalScreen(
                 GoalCard(
                     goal = goal,
                     onEdit = { editingGoal = goal },
-                    onDelete = { onDeleteGoal(goal.id) },
+                    onDelete = { goalPendingDelete = goal },
                     onEmergencyWithdraw = { emergencyGoalId = goal.id },
                 )
             }
@@ -200,6 +202,31 @@ fun GoalScreen(
                     allowEmergencyUse,
                 )
                 editingGoal = null
+            },
+        )
+    }
+
+    goalPendingDelete?.let { goal ->
+        AlertDialog(
+            onDismissRequest = { goalPendingDelete = null },
+            title = { Text("Delete Goal") },
+            text = { Text("Are you sure you want to delete \"${goal.title}\"?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDeleteGoal(goal.id)
+                        goalPendingDelete = null
+                    },
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { goalPendingDelete = null },
+                ) {
+                    Text("Cancel")
+                }
             },
         )
     }

@@ -5,4 +5,6 @@ data class ProfileUiState(
     val email: String = "",
     val preferredCurrency: String = "LKR",
     val notificationCaptureEnabled: Boolean = false,
+    val isDeletingAccount: Boolean = false,
+    val message: String? = null,
 )

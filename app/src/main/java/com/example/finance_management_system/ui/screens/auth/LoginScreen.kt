@@ -50,6 +50,7 @@ fun LoginScreen(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLogin: () -> Unit,
+    onGoogleLogin: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onRegisterClick: () -> Unit,
 ) {
@@ -190,6 +191,15 @@ fun LoginScreen(
                             Text(stringResource(R.string.button_sign_in))
                         }
                     }
+
+                    OutlinedButton(
+                        onClick = onGoogleLogin,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !uiState.isLoading,
+                    ) {
+                        Text(stringResource(R.string.button_google_sign_in))
+                    }
+
                     OutlinedButton(
                         onClick = onRegisterClick,
                         modifier = Modifier.fillMaxWidth(),

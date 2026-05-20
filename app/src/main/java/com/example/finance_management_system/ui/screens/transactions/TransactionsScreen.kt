@@ -67,6 +67,7 @@ fun TransactionsScreen(
 ) {
     var editingTransaction by remember { mutableStateOf<TransactionItem?>(null) }
     var confirmingDetected by remember { mutableStateOf<DetectedTransactionItem?>(null) }
+    var transactionPendingDelete by remember { mutableStateOf<TransactionItem?>(null) }
 
     LaunchedEffect(message) {
         if (message != null) onConsumeMessage()
@@ -239,7 +240,7 @@ fun TransactionsScreen(
                                 Button(onClick = { editingTransaction = item }) {
                                     Text(stringResource(R.string.button_edit))
                                 }
-                                TextButton(onClick = { onDeleteTransaction(item) }) {
+                                TextButton(onClick = { transactionPendingDelete = item }) {
                                     Text(stringResource(R.string.button_delete))
                                 }
                             }
@@ -274,6 +275,31 @@ fun TransactionsScreen(
                     note,
                 )
                 confirmingDetected = null
+            },
+        )
+    }
+
+    transactionPendingDelete?.let { transaction ->
+        AlertDialog(
+            onDismissRequest = { transactionPendingDelete = null },
+            title = { Text("Delete Transaction") },
+            text = { Text("Are you sure you want to delete this transaction?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDeleteTransaction(transaction)
+                        transactionPendingDelete = null
+                    },
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { transactionPendingDelete = null },
+                ) {
+                    Text("Cancel")
+                }
             },
         )
     }

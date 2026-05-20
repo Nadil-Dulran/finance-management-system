@@ -49,6 +49,7 @@ fun RecurringBillsScreen(
     currentRoute: String,
 ) {
     var editingBill by remember { mutableStateOf<TransactionItem?>(null) }
+    var billPendingDelete by remember { mutableStateOf<TransactionItem?>(null) }
 
     AppScaffold(
         title = "Recurring Bills",
@@ -116,7 +117,7 @@ fun RecurringBillsScreen(
                                 TextButton(onClick = { editingBill = bill }) {
                                     Text(stringResource(R.string.button_edit), color = MaterialTheme.colorScheme.primary)
                                 }
-                                TextButton(onClick = { onDeleteBill(bill) }) {
+                                TextButton(onClick = { billPendingDelete = bill }) {
                                     Text("Cancel Tracking", color = MaterialTheme.colorScheme.error)
                                 }
                             }
@@ -135,6 +136,31 @@ fun RecurringBillsScreen(
                 onUpdateBill(it)
                 editingBill = null
             }
+        )
+    }
+
+    billPendingDelete?.let { bill ->
+        AlertDialog(
+            onDismissRequest = { billPendingDelete = null },
+            title = { Text("Cancel Subscription Tracking") },
+            text = { Text("Are you sure you want to stop tracking \"${bill.title}\"? Future transactions will not be automatically generated.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDeleteBill(bill)
+                        billPendingDelete = null
+                    },
+                ) {
+                    Text("Stop Tracking")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { billPendingDelete = null },
+                ) {
+                    Text(stringResource(R.string.button_cancel))
+                }
+            },
         )
     }
 }

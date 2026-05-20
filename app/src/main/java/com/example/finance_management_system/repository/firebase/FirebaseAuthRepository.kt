@@ -77,6 +77,25 @@ class FirebaseAuthRepository(
         }
     }
 
+    override suspend fun loginWithGoogle(idToken: String): Result<AuthUser> {
+        return runCatching {
+            val credential = com.google.firebase.auth.GoogleAuthProvider.getCredential(idToken, null)
+            val result = withTimeout(AUTH_TIMEOUT_MS) {
+                firebaseAuth.signInWithCredential(credential).awaitTask("loginWithGoogle")
+            }
+            val user = requireNotNull(result.user) { "User account not available." }
+            val authUser = AuthUser(
+                uid = user.uid,
+                displayName = user.displayName ?: user.email.orEmpty(),
+                email = user.email.orEmpty(),
+            )
+            authSessionManager.setCurrentUser(authUser)
+            authUser
+        }.recoverCatching { throwable ->
+            throw mapAuthException("loginWithGoogle", throwable)
+        }
+    }
+
     override suspend fun sendPasswordReset(email: String): Result<Unit> {
         return runCatching {
             val normalizedEmail = email.trim()

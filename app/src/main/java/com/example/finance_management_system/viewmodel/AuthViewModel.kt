@@ -44,12 +44,7 @@ class AuthViewModel(
             _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             repository.login(state.email, state.password)
                 .onSuccess { user ->
-                    runCatching { syncService.syncUserData(user.uid) }
-                        .onFailure { Log.w(TAG, "Initial sync after login failed", it) }
-                    runCatching { localFinanceRepository?.cleanupLegacyDemoData() }
-                        .onFailure { Log.w(TAG, "Legacy data cleanup after login failed", it) }
-                    _uiState.update { current -> current.copy(isLoading = false) }
-                    onSuccess()
+                    handleAuthSuccess(user.uid, onSuccess)
                 }
                 .onFailure { throwable ->
                     _uiState.update {
@@ -69,12 +64,7 @@ class AuthViewModel(
             _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             repository.register(state.name, state.email, state.password)
                 .onSuccess { user ->
-                    runCatching { syncService.syncUserData(user.uid) }
-                        .onFailure { Log.w(TAG, "Initial sync after registration failed", it) }
-                    runCatching { localFinanceRepository?.cleanupLegacyDemoData() }
-                        .onFailure { Log.w(TAG, "Legacy data cleanup after registration failed", it) }
-                    _uiState.update { current -> current.copy(isLoading = false) }
-                    onSuccess()
+                    handleAuthSuccess(user.uid, onSuccess)
                 }
                 .onFailure { throwable ->
                     _uiState.update {
@@ -86,6 +76,40 @@ class AuthViewModel(
                     }
                 }
         }
+    }
+
+    fun loginWithGoogle(idToken: String, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
+            repository.loginWithGoogle(idToken)
+                .onSuccess { user ->
+                    handleAuthSuccess(user.uid, onSuccess)
+                }
+                .onFailure { throwable ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = throwable.message ?: AppDefaults.ERROR_SIGN_IN,
+                            successMessage = null,
+                        )
+                    }
+                }
+        }
+    }
+
+    private suspend fun handleAuthSuccess(uid: String, onSuccess: () -> Unit) {
+        try {
+            syncService.syncUserData(uid)
+        } catch (e: Exception) {
+            Log.w(TAG, "Initial sync after auth failed", e)
+        }
+        try {
+            localFinanceRepository?.cleanupLegacyDemoData()
+        } catch (e: Exception) {
+            Log.w(TAG, "Legacy data cleanup after auth failed", e)
+        }
+        _uiState.update { current -> current.copy(isLoading = false) }
+        onSuccess()
     }
 
     fun sendPasswordReset() {

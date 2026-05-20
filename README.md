@@ -41,6 +41,7 @@ The app is designed around an offline-first finance flow:
 - Edit transactions
 - Delete transactions
 - Recurring expense refresh support
+
 ### Goal Management
 
 - Add and update savings goals

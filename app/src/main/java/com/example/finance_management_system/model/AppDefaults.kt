@@ -23,6 +23,7 @@ object AppDefaults {
     const val ERROR_TRANSACTION_UPDATE = "Could not update transaction."
     const val ERROR_TRANSACTION_DELETE = "Could not delete transaction."
     const val ERROR_SIGN_IN = "Sign in failed."
+    const val ERROR_LOGIN_REQUIRED = "Please enter email or password"
     const val ERROR_REGISTER = "Registration failed."
     const val ERROR_RESET_PASSWORD = "Could not send reset email."
     const val ERROR_RESET_PASSWORD_EMAIL_REQUIRED = "Enter your account email first."

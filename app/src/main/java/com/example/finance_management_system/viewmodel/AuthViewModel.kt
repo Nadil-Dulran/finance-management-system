@@ -39,8 +39,18 @@ class AuthViewModel(
     }
 
     fun login(onSuccess: () -> Unit) {
+        val state = _uiState.value
+        if (state.email.isBlank() || state.password.isBlank()) {
+            _uiState.update {
+                it.copy(
+                    errorMessage = AppDefaults.ERROR_LOGIN_REQUIRED,
+                    successMessage = null,
+                )
+            }
+            return
+        }
+
         viewModelScope.launch {
-            val state = _uiState.value
             _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             repository.login(state.email, state.password)
                 .onSuccess { user ->

@@ -664,9 +664,14 @@ class LocalFinanceRepository(
         preferredCurrency: String,
         rates: Map<String, Double>,
     ): String {
-        val rateToLkr = rates[preferredCurrency.uppercase()] ?: 1.0
+        val currencyCode = preferredCurrency.uppercase()
+        if (currencyCode == "LKR") {
+            return CurrencyConverter.format(amountLkr, currencyCode)
+        }
+
+        val rateToLkr = rates[currencyCode] ?: return CurrencyConverter.format(amountLkr, "LKR")
         val converted = CurrencyConverter.fromLkr(amountLkr, rateToLkr)
-        return CurrencyConverter.format(converted, preferredCurrency)
+        return CurrencyConverter.format(converted, currencyCode)
     }
 
     private fun isLegacyDemoExpense(expense: ExpenseEntity): Boolean {

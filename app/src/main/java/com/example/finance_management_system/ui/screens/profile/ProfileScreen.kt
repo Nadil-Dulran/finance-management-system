@@ -64,8 +64,8 @@ fun ProfileScreen(
         ) {
             GradientHeroCard(
                 eyebrow = "PROFILE",
-                title = uiState.displayName,
-                amount = uiState.preferredCurrency,
+                title = uiState.preferredCurrency,
+                amount = uiState.displayName,
                 subtitle = uiState.email,
                 modifier = Modifier.fillMaxWidth(),
                 accent = {
@@ -148,7 +148,7 @@ fun ProfileScreen(
                 Text(stringResource(R.string.profile_notification_access))
             }
             Button(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.profile_open_settings))
+                Text(stringResource(R.string.profile_change_currency_preference))
             }
             Button(onClick = onSignOut, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.profile_sign_out))

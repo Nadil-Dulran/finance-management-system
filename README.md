@@ -13,6 +13,7 @@ The app is designed around an offline-first finance flow:
 - Dashboard charts and summaries give a quick view of current finance status
 - Goal tracking supports monthly contributions and emergency withdrawals
 - Notification parsing support exists for detecting bank transaction alerts
+- Automated recurring transaction generation and proactive due reminders
 
 ## Features
 
@@ -40,7 +41,6 @@ The app is designed around an offline-first finance flow:
 - Edit transactions
 - Delete transactions
 - Recurring expense refresh support
-
 ### Goal Management
 
 - Add and update savings goals
@@ -109,6 +109,7 @@ The project follows an MVVM-style structure:
 - `AddIncomeScreen`
 - `AddExpenseScreen`
 - `TransactionsScreen`
+- `RecurringBillsScreen`
 - `GoalScreen`
 - `SettingsScreen`
 - `ProfileScreen`
@@ -120,6 +121,7 @@ The project follows an MVVM-style structure:
 - `FirebaseAuthRepository` for auth flows
 - `LocalFinanceRepository` and `LocalGoalRepository` for local persistence logic
 - `FirestoreSyncService` for Firebase synchronization
+- `BillReminderWorker` for background due date scanning
 
 ## Requirements
 

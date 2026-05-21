@@ -1,5 +1,7 @@
 package com.example.finance_management_system.di
 
+import com.example.finance_management_system.data.session.AuthPostLoginCoordinator
+import com.example.finance_management_system.data.session.DefaultAuthPostLoginCoordinator
 import com.example.finance_management_system.repository.AuthRepository
 import com.example.finance_management_system.repository.FinanceRepository
 import com.example.finance_management_system.repository.GoalRepository
@@ -15,6 +17,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindAuthPostLoginCoordinator(
+        coordinator: DefaultAuthPostLoginCoordinator,
+    ): AuthPostLoginCoordinator
+
     @Binds
     @Singleton
     abstract fun bindAuthRepository(

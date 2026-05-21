@@ -32,6 +32,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -105,8 +106,12 @@ fun AssistantOverlay(
         }
 
         if (uiState.isOpen) {
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true,
+            )
             ModalBottomSheet(
                 onDismissRequest = onClose,
+                sheetState = sheetState,
                 modifier = Modifier.navigationBarsPadding(),
             ) {
                 AssistantChatSheet(

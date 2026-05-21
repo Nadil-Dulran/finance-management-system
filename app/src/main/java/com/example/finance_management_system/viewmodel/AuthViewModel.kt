@@ -3,11 +3,9 @@ package com.example.finance_management_system.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.remote.FirestoreSyncService
-import com.example.finance_management_system.data.sync.SyncQueueManager
 import com.example.finance_management_system.model.AppDefaults
 import com.example.finance_management_system.repository.AuthRepository
-import com.example.finance_management_system.repository.local.LocalFinanceRepository
+import com.example.finance_management_system.data.session.AuthPostLoginCoordinator
 import com.example.finance_management_system.ui.state.AuthUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -20,9 +18,7 @@ import kotlinx.coroutines.flow.update
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
-    private val syncService: FirestoreSyncService,
-    private val syncQueueManager: SyncQueueManager,
-    private val localFinanceRepository: LocalFinanceRepository,
+    private val authPostLoginCoordinator: AuthPostLoginCoordinator,
 ) : ViewModel() {
     private companion object {
         const val TAG = "AuthViewModel"
@@ -114,20 +110,9 @@ class AuthViewModel @Inject constructor(
 
     private suspend fun handleAuthSuccess(uid: String, onSuccess: () -> Unit) {
         try {
-            syncQueueManager.processPendingOperations()
+            authPostLoginCoordinator.onAuthenticated(uid)
         } catch (e: Exception) {
-            Log.w(TAG, "Queued sync after auth failed", e)
-        }
-        try {
-            syncService.syncUserData(uid)
-        } catch (e: Exception) {
-            Log.w(TAG, "Initial sync after auth failed", e)
-        }
-        syncQueueManager.scheduleImmediateSync()
-        try {
-            localFinanceRepository?.cleanupLegacyDemoData()
-        } catch (e: Exception) {
-            Log.w(TAG, "Legacy data cleanup after auth failed", e)
+            Log.w(TAG, "Post-auth setup failed", e)
         }
         _uiState.update { current -> current.copy(isLoading = false) }
         onSuccess()

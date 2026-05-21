@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.ArrowDownward
@@ -41,8 +43,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.finance_management_system.navigation.bottomNavItems
 
@@ -78,67 +82,32 @@ fun AppScaffold(
             },
             bottomBar = {
                 if (showBottomBar) {
-                    Surface(
-                        tonalElevation = 0.dp,
-                        shadowElevation = 10.dp,
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 10.dp, vertical = 10.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.Bottom,
-                            ) {
-                                bottomNavItems.forEach { item ->
-                                    if (item.isAddAction) {
-                                        BottomBarAddButton(
-                                            expanded = isAddMenuExpanded,
-                                            label = stringResource(item.labelRes),
-                                            onClick = {
-                                                isAddMenuExpanded = !isAddMenuExpanded
-                                            },
-                                            onAddIncomeClick = if (onAddIncomeClick != null && onAddExpenseClick != null) {
-                                                {
-                                                    isAddMenuExpanded = false
-                                                    onAddIncomeClick.invoke()
-                                                }
-                                            } else {
-                                                null
-                                            },
-                                            onAddExpenseClick = if (onAddIncomeClick != null && onAddExpenseClick != null) {
-                                                {
-                                                    isAddMenuExpanded = false
-                                                    onAddExpenseClick.invoke()
-                                                }
-                                            } else {
-                                                null
-                                            },
-                                        )
-                                    } else {
-                                        BottomBarItem(
-                                            label = stringResource(item.labelRes),
-                                            icon = {
-                                                Icon(
-                                                    item.icon,
-                                                    contentDescription = stringResource(item.labelRes),
-                                                )
-                                            },
-                                            selected = currentRoute == item.route,
-                                            onClick = {
-                                                isAddMenuExpanded = false
-                                                onBottomNavClick(item.route)
-                                            },
-                                        )
-                                    }
-                                }
+                    FeaturedBottomBar(
+                        currentRoute = currentRoute,
+                        expanded = isAddMenuExpanded,
+                        onAddToggle = { isAddMenuExpanded = !isAddMenuExpanded },
+                        onDismissAddMenu = { isAddMenuExpanded = false },
+                        onBottomNavClick = { route ->
+                            isAddMenuExpanded = false
+                            onBottomNavClick(route)
+                        },
+                        onAddIncomeClick = if (onAddIncomeClick != null && onAddExpenseClick != null) {
+                            {
+                                isAddMenuExpanded = false
+                                onAddIncomeClick.invoke()
                             }
-                        }
-                    }
+                        } else {
+                            null
+                        },
+                        onAddExpenseClick = if (onAddIncomeClick != null && onAddExpenseClick != null) {
+                            {
+                                isAddMenuExpanded = false
+                                onAddExpenseClick.invoke()
+                            }
+                        } else {
+                            null
+                        },
+                    )
                 }
             },
             floatingActionButton = {
@@ -151,6 +120,98 @@ fun AppScaffold(
                     .padding(horizontal = 20.dp, vertical = 12.dp),
             )
         }
+    }
+}
+
+@Composable
+private fun FeaturedBottomBar(
+    currentRoute: String?,
+    expanded: Boolean,
+    onAddToggle: () -> Unit,
+    onDismissAddMenu: () -> Unit,
+    onBottomNavClick: (String) -> Unit,
+    onAddIncomeClick: (() -> Unit)?,
+    onAddExpenseClick: (() -> Unit)?,
+) {
+    val addButtonLift = 24.dp
+    val outerShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+    val primaryItems = bottomNavItems.filterNot { it.isAddAction }
+    val leftItems = primaryItems.take(2)
+    val rightItems = primaryItems.drop(2)
+
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        Surface(
+            tonalElevation = 0.dp,
+            shadowElevation = 12.dp,
+            shape = outerShape,
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 14.dp, end = 14.dp, top = 18.dp, bottom = 12.dp),
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    leftItems.forEach { item ->
+                        BottomBarItem(
+                            label = stringResource(item.labelRes),
+                            icon = {
+                                Icon(
+                                    item.icon,
+                                    contentDescription = stringResource(item.labelRes),
+                                )
+                            },
+                            selected = currentRoute == item.route,
+                            onClick = {
+                                onDismissAddMenu()
+                                onBottomNavClick(item.route)
+                            },
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.widthIn(min = 84.dp))
+
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    rightItems.forEach { item ->
+                        BottomBarItem(
+                            label = stringResource(item.labelRes),
+                            icon = {
+                                Icon(
+                                    item.icon,
+                                    contentDescription = stringResource(item.labelRes),
+                                )
+                            },
+                            selected = currentRoute == item.route,
+                            onClick = {
+                                onDismissAddMenu()
+                                onBottomNavClick(item.route)
+                            },
+                        )
+                    }
+                }
+            }
+        }
+
+        BottomBarAddButton(
+            expanded = expanded,
+            label = stringResource(bottomNavItems.first { it.isAddAction }.labelRes),
+            onClick = onAddToggle,
+            onAddIncomeClick = onAddIncomeClick,
+            onAddExpenseClick = onAddExpenseClick,
+            lift = addButtonLift,
+        )
     }
 }
 
@@ -233,21 +294,25 @@ private fun BottomBarAddButton(
     onClick: () -> Unit,
     onAddIncomeClick: (() -> Unit)?,
     onAddExpenseClick: (() -> Unit)?,
+    lift: Dp = 0.dp,
 ) {
     Column(
-        modifier = Modifier.widthIn(min = 72.dp),
+        modifier = Modifier
+            .widthIn(min = 72.dp)
+            .offset(y = -lift),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Box(contentAlignment = Alignment.Center) {
             Box(
                 modifier = Modifier
-                    .size(54.dp)
+                    .size(68.dp)
+                    .clip(CircleShape)
                     .background(
                         color = if (expanded) {
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)
+                            MaterialTheme.colorScheme.primary
                         } else {
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.65f)
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.96f)
                         },
                         shape = CircleShape,
                     )
@@ -257,7 +322,7 @@ private fun BottomBarAddButton(
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = label,
-                    tint = if (expanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
 
@@ -288,8 +353,8 @@ private fun BottomBarAddButton(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = if (expanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
         )
         Spacer(modifier = Modifier.height(1.dp))
     }

@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,8 @@ fun LoginScreen(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLogin: () -> Unit,
+    onGoogleLogin: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
     onRegisterClick: () -> Unit,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
@@ -125,6 +128,18 @@ fun LoginScreen(
                         },
                     )
 
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        TextButton(
+                            onClick = onForgotPasswordClick,
+                            enabled = !uiState.isLoading,
+                        ) {
+                            Text(stringResource(R.string.button_forgot_password))
+                        }
+                    }
+
                     uiState.errorMessage?.let { message ->
                         Box(
                             modifier = Modifier
@@ -138,6 +153,24 @@ fun LoginScreen(
                             Text(
                                 text = message,
                                 color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+
+                    uiState.successMessage?.let { message ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                                    shape = MaterialTheme.shapes.medium,
+                                )
+                                .padding(12.dp),
+                        ) {
+                            Text(
+                                text = message,
+                                color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
@@ -158,6 +191,15 @@ fun LoginScreen(
                             Text(stringResource(R.string.button_sign_in))
                         }
                     }
+
+                    OutlinedButton(
+                        onClick = onGoogleLogin,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !uiState.isLoading,
+                    ) {
+                        Text(stringResource(R.string.button_google_sign_in))
+                    }
+
                     OutlinedButton(
                         onClick = onRegisterClick,
                         modifier = Modifier.fillMaxWidth(),

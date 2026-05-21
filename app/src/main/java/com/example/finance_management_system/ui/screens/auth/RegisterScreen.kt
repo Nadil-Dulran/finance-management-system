@@ -47,6 +47,7 @@ fun RegisterScreen(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRegister: () -> Unit,
+    onGoogleRegister: () -> Unit,
     onBackToLogin: () -> Unit,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
@@ -156,6 +157,15 @@ fun RegisterScreen(
                             Text(stringResource(R.string.button_create_account))
                         }
                     }
+
+                    OutlinedButton(
+                        onClick = onGoogleRegister,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !uiState.isLoading,
+                    ) {
+                        Text(stringResource(R.string.button_google_sign_in))
+                    }
+
                     OutlinedButton(
                         onClick = onBackToLogin,
                         modifier = Modifier.fillMaxWidth(),

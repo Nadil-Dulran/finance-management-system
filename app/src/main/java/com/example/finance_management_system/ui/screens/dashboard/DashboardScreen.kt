@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +38,7 @@ fun DashboardScreen(
     onAddIncomeClick: () -> Unit,
     onAddExpenseClick: () -> Unit,
     onTransactionsClick: () -> Unit,
+    onRecurringBillsClick: () -> Unit,
     onGoalClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onBottomNavClick: (String) -> Unit,
@@ -63,8 +65,8 @@ fun DashboardScreen(
                 GradientHeroCard(
                     eyebrow = "STATISTICS",
                     title = "Spending Analysis",
-                    amount = incomeSummary?.amountLabel ?: "LKR 0.00",
-                    subtitle = expenseSummary?.let { "Spent: ${it.amountLabel}" } ?: "Spent: LKR 0.00",
+                    amount = freeCashSummary?.amountLabel ?: "LKR 0.00",
+                    subtitle = incomeSummary?.let { "Income: ${it.amountLabel}" } ?: "Income: LKR 0.00",
                     modifier = Modifier.fillMaxWidth(),
                     accent = {
                         AssistChip(
@@ -149,7 +151,7 @@ fun DashboardScreen(
 
             item {
                 Text(
-                    text = "INSIGHTS",
+                    text = "QUICK ACTIONS",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF4F46E5),
@@ -157,13 +159,22 @@ fun DashboardScreen(
             }
 
             item {
-                QuickActionCard(
-                    title = "This month",
-                    description = uiState.spendVsLeftMessage.ifBlank { "Your latest balance between income and spending." },
-                    icon = Icons.Outlined.Analytics,
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onTransactionsClick,
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    QuickActionCard(
+                        title = "Transaction Insights",
+                        description = uiState.spendVsLeftMessage.ifBlank { "Your latest balance between income and spending." },
+                        icon = Icons.Outlined.Analytics,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onTransactionsClick,
+                    )
+                    QuickActionCard(
+                        title = "Manage Subscriptions",
+                        description = "View and manage your monthly or yearly recurring bills.",
+                        icon = Icons.Outlined.Repeat,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onRecurringBillsClick,
+                    )
+                }
             }
 
             if (uiState.recentTransactions.isEmpty()) {

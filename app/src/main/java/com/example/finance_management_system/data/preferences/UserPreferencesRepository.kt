@@ -1,6 +1,9 @@
 package com.example.finance_management_system.data.preferences
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -16,7 +19,10 @@ private val Context.userPreferencesDataStore: DataStore<Preferences> by preferen
     name = "user_preferences",
 )
 
-class UserPreferencesRepository(private val context: Context) {
+@Singleton
+class UserPreferencesRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
+) {
     val preferredCurrency: Flow<String> = context.userPreferencesDataStore.data.map { prefs ->
         prefs[KEY_PREFERRED_CURRENCY] ?: "LKR"
     }

@@ -2,6 +2,8 @@ package com.example.finance_management_system.data.currency
 
 import com.example.finance_management_system.data.preferences.UserPreferencesRepository
 import com.example.finance_management_system.model.supportedCurrencies
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -10,7 +12,8 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-class ExchangeRateRepository(
+@Singleton
+class ExchangeRateRepository @Inject constructor(
     private val preferencesRepository: UserPreferencesRepository,
 ) {
     private val trackedCurrencies = supportedCurrencies.map { it.uppercase() }.distinct()

@@ -2,10 +2,11 @@ package com.example.finance_management_system.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
 import com.example.finance_management_system.repository.GoalRepository
 import com.example.finance_management_system.repository.local.LocalGoalRepository
 import com.example.finance_management_system.ui.state.GoalUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,9 +14,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 
-class GoalViewModel(
-    private val repository: GoalRepository = AppContainer.goalRepository,
+@HiltViewModel
+class GoalViewModel @Inject constructor(
+    private val repository: GoalRepository,
 ) : ViewModel() {
     private val statusState = MutableStateFlow(GoalUiState())
     private val localGoalRepository = repository as? LocalGoalRepository
@@ -58,6 +61,7 @@ class GoalViewModel(
         val parsedMonths = monthsToDeadline.toIntOrNull()
         val parsedMonthlyContribution = monthlyContribution.toDoubleOrNull() ?: 0.0
         val parsedContributionDay = contributionDayOfMonth.toIntOrNull()
+        val minimumMonthlyRequired = calculateMinimumMonthlyRequired(parsedTarget, parsedSaved, parsedMonths)
 
         if (
             title.isBlank() ||
@@ -67,9 +71,23 @@ class GoalViewModel(
             parsedMonths <= 0 ||
             parsedContributionDay == null ||
             parsedContributionDay !in 1..28 ||
-            parsedMonthlyContribution < 0.0
+            parsedMonthlyContribution < minimumMonthlyRequired
         ) {
-            statusState.update { it.copy(message = "Enter a valid goal, deadline, monthly saving amount, and contribution day.") }
+            statusState.update {
+                it.copy(
+                    message = if (
+                        parsedTarget != null &&
+                        parsedTarget > 0.0 &&
+                        parsedMonths != null &&
+                        parsedMonths > 0 &&
+                        parsedMonthlyContribution < minimumMonthlyRequired
+                    ) {
+                        "Monthly saving amount must be at least ${formatMinimumAmount(minimumMonthlyRequired)} to reach this goal on time."
+                    } else {
+                        "Enter a valid goal, deadline, monthly saving amount, and contribution day."
+                    },
+                )
+            }
             return
         }
 
@@ -107,6 +125,7 @@ class GoalViewModel(
         val parsedMonths = monthsToDeadline.toIntOrNull()
         val parsedMonthlyContribution = monthlyContribution.toDoubleOrNull() ?: 0.0
         val parsedContributionDay = contributionDayOfMonth.toIntOrNull()
+        val minimumMonthlyRequired = calculateMinimumMonthlyRequired(parsedTarget, parsedSaved, parsedMonths)
         if (
             title.isBlank() ||
             parsedTarget == null ||
@@ -115,9 +134,23 @@ class GoalViewModel(
             parsedMonths <= 0 ||
             parsedContributionDay == null ||
             parsedContributionDay !in 1..28 ||
-            parsedMonthlyContribution < 0.0
+            parsedMonthlyContribution < minimumMonthlyRequired
         ) {
-            statusState.update { it.copy(message = "Enter a valid goal, deadline, monthly saving amount, and contribution day.") }
+            statusState.update {
+                it.copy(
+                    message = if (
+                        parsedTarget != null &&
+                        parsedTarget > 0.0 &&
+                        parsedMonths != null &&
+                        parsedMonths > 0 &&
+                        parsedMonthlyContribution < minimumMonthlyRequired
+                    ) {
+                        "Monthly saving amount must be at least ${formatMinimumAmount(minimumMonthlyRequired)} to reach this goal on time."
+                    } else {
+                        "Enter a valid goal, deadline, monthly saving amount, and contribution day."
+                    },
+                )
+            }
             return
         }
 
@@ -166,6 +199,27 @@ class GoalViewModel(
                 .onFailure { throwable ->
                     statusState.update { it.copy(message = throwable.message ?: "Could not record emergency withdrawal.") }
                 }
+        }
+    }
+
+    private fun calculateMinimumMonthlyRequired(
+        targetAmount: Double?,
+        currentSaved: Double,
+        monthsToDeadline: Int?,
+    ): Double {
+        if (targetAmount == null || targetAmount <= 0.0 || monthsToDeadline == null || monthsToDeadline <= 0) {
+            return 0.0
+        }
+        val remaining = (targetAmount - currentSaved).coerceAtLeast(0.0)
+        val rawMonthly = remaining / monthsToDeadline
+        return ceil(rawMonthly * 100.0) / 100.0
+    }
+
+    private fun formatMinimumAmount(amount: Double): String {
+        return if (amount % 1.0 == 0.0) {
+            amount.toInt().toString()
+        } else {
+            String.format("%.2f", amount)
         }
     }
 }

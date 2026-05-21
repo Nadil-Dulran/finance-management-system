@@ -2,18 +2,20 @@ package com.example.finance_management_system.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
 import com.example.finance_management_system.model.AppDefaults
 import com.example.finance_management_system.repository.FinanceRepository
 import com.example.finance_management_system.ui.state.EntryFormUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class AddIncomeViewModel(
-    private val financeRepository: FinanceRepository = AppContainer.financeRepository,
+@HiltViewModel
+class AddIncomeViewModel @Inject constructor(
+    private val financeRepository: FinanceRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         EntryFormUiState(

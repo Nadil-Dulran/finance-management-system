@@ -2,9 +2,15 @@ package com.example.finance_management_system.data.storage
 
 import android.content.Context
 import android.os.Environment
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 import java.io.File
 
-class FileStorageManager(private val context: Context) {
+@Singleton
+class FileStorageManager @Inject constructor(
+    @ApplicationContext private val context: Context,
+) {
     fun getInternalReportDirectory(): File {
         val dir = File(context.filesDir, "reports")
         if (!dir.exists()) dir.mkdirs()

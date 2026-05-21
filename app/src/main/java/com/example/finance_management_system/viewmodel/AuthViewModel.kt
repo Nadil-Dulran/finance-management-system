@@ -3,26 +3,31 @@ package com.example.finance_management_system.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
+import com.example.finance_management_system.data.remote.FirestoreSyncService
+import com.example.finance_management_system.data.sync.SyncQueueManager
 import com.example.finance_management_system.model.AppDefaults
 import com.example.finance_management_system.repository.AuthRepository
 import com.example.finance_management_system.repository.local.LocalFinanceRepository
 import com.example.finance_management_system.ui.state.AuthUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class AuthViewModel(
-    private val repository: AuthRepository = AppContainer.authRepository,
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val repository: AuthRepository,
+    private val syncService: FirestoreSyncService,
+    private val syncQueueManager: SyncQueueManager,
+    private val localFinanceRepository: LocalFinanceRepository,
 ) : ViewModel() {
     private companion object {
         const val TAG = "AuthViewModel"
     }
 
-    private val syncService = AppContainer.firestoreSyncService
-    private val localFinanceRepository = AppContainer.financeRepository as? LocalFinanceRepository
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
@@ -109,10 +114,16 @@ class AuthViewModel(
 
     private suspend fun handleAuthSuccess(uid: String, onSuccess: () -> Unit) {
         try {
+            syncQueueManager.processPendingOperations()
+        } catch (e: Exception) {
+            Log.w(TAG, "Queued sync after auth failed", e)
+        }
+        try {
             syncService.syncUserData(uid)
         } catch (e: Exception) {
             Log.w(TAG, "Initial sync after auth failed", e)
         }
+        syncQueueManager.scheduleImmediateSync()
         try {
             localFinanceRepository?.cleanupLegacyDemoData()
         } catch (e: Exception) {

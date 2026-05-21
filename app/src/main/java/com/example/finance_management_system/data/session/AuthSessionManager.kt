@@ -1,11 +1,14 @@
 package com.example.finance_management_system.data.session
 
 import com.example.finance_management_system.repository.AuthUser
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AuthSessionManager {
+@Singleton
+class AuthSessionManager @Inject constructor() {
     private val _currentUser = MutableStateFlow<AuthUser?>(null)
     val currentUser: StateFlow<AuthUser?> = _currentUser.asStateFlow()
 

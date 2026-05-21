@@ -124,6 +124,7 @@
     <string name="goal_empty_copy">Create your own goal plan and the app will track progress, monthly auto-saving, and emergency use for you.</string>
     <string name="goal_monthly_transfer">Monthly auto-save: %1$s</string>
     <string name="goal_monthly_transfer_field">Monthly amount from salary</string>
+    <string name="goal_minimum_monthly_helper">Minimum needed per month: LKR %1$s</string>
     <string name="goal_transfer_day_field">Transfer day of month (1-28)</string>
     <string name="goal_allow_emergency_use">Allow emergency withdrawals from this goal</string>
     <string name="goal_emergency_withdraw">Emergency Withdraw</string>

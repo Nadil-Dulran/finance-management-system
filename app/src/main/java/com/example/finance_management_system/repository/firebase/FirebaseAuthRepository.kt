@@ -6,6 +6,7 @@ import com.example.finance_management_system.data.session.AuthSessionManager
 import com.example.finance_management_system.model.AppDefaults
 import com.example.finance_management_system.repository.AuthRepository
 import com.example.finance_management_system.repository.AuthUser
+import dagger.hilt.android.qualifiers.ApplicationContext
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -22,13 +23,16 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class FirebaseAuthRepository(
-    private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
+@Singleton
+class FirebaseAuthRepository @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
     private val authSessionManager: AuthSessionManager,
-    private val appContext: Context,
+    @ApplicationContext private val appContext: Context,
 ) : AuthRepository {
 
     private companion object {

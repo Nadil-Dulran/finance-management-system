@@ -2,7 +2,6 @@ package com.example.finance_management_system.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
 import com.example.finance_management_system.model.ChartDatum
 import com.example.finance_management_system.model.GoalOverview
 import com.example.finance_management_system.model.InsightItem
@@ -12,6 +11,8 @@ import com.example.finance_management_system.repository.FinanceRepository
 import com.example.finance_management_system.repository.GoalRepository
 import com.example.finance_management_system.repository.local.LocalFinanceRepository
 import com.example.finance_management_system.ui.state.DashboardUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -19,9 +20,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(
-    repository: FinanceRepository = AppContainer.financeRepository,
-    goalRepository: GoalRepository = AppContainer.goalRepository,
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    repository: FinanceRepository,
+    goalRepository: GoalRepository,
 ) : ViewModel() {
     private val localRepository = repository as? LocalFinanceRepository
 

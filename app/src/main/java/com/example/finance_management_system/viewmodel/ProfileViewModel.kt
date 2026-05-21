@@ -1,13 +1,19 @@
 package com.example.finance_management_system.viewmodel
 
-import android.app.Application
+import android.content.Context
 import android.provider.Settings
-import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
+import com.example.finance_management_system.data.local.FinanceDatabase
+import com.example.finance_management_system.data.preferences.UserPreferencesRepository
+import com.example.finance_management_system.data.remote.FirestoreSyncService
+import com.example.finance_management_system.data.session.AuthSessionManager
 import com.example.finance_management_system.ui.state.ProfileUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +23,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class ProfileViewModel : ViewModel() {
-    private val auth = AppContainer.firebaseAuth
-    private val sessionManager = AppContainer.authSessionManager
-    private val preferences = AppContainer.userPreferencesRepository
-    private val context = AppContainer.appContext
-    private val syncService = AppContainer.firestoreSyncService
-    private val database = AppContainer.database
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val sessionManager: AuthSessionManager,
+    private val preferences: UserPreferencesRepository,
+    @ApplicationContext private val context: Context,
+    private val syncService: FirestoreSyncService,
+    private val database: FinanceDatabase,
+) : ViewModel() {
     private val statusState = MutableStateFlow(ProfileUiState())
 
     val uiState: StateFlow<ProfileUiState> = combine(

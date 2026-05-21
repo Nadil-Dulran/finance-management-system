@@ -19,6 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +38,7 @@ import com.example.finance_management_system.ui.components.FrostedBadge
 import com.example.finance_management_system.ui.components.GradientHeroCard
 import com.example.finance_management_system.ui.components.MetricCard
 import com.example.finance_management_system.ui.state.GoalUiState
+import kotlin.math.ceil
 
 @Composable
 fun GoalScreen(
@@ -312,6 +315,36 @@ private fun AddGoalDialog(
     var monthlyContribution by remember(initialGoal?.id) { mutableStateOf(initialGoal?.monthlyContributionLkr?.toString().orEmpty()) }
     var contributionDay by remember(initialGoal?.id) { mutableStateOf((initialGoal?.contributionDayOfMonth ?: 5).toString()) }
     var allowEmergencyUse by remember(initialGoal?.id) { mutableStateOf(initialGoal?.allowEmergencyUse ?: true) }
+    val minimumMonthlyRequired by remember(targetAmount, currentSaved, monthsToDeadline) {
+        derivedStateOf {
+            calculateMinimumMonthlyRequired(
+                targetAmount = targetAmount.toDoubleOrNull(),
+                currentSaved = currentSaved.toDoubleOrNull() ?: 0.0,
+                monthsToDeadline = monthsToDeadline.toIntOrNull(),
+            )
+        }
+    }
+    val minimumMonthlyRequiredLabel by remember(minimumMonthlyRequired) {
+        derivedStateOf { formatGoalAmount(minimumMonthlyRequired) }
+    }
+    val monthlyContributionError by remember(monthlyContribution, minimumMonthlyRequired) {
+        derivedStateOf {
+            val parsedMonthly = monthlyContribution.toDoubleOrNull() ?: return@derivedStateOf null
+            if (parsedMonthly < minimumMonthlyRequired) {
+                "Enter at least LKR $minimumMonthlyRequiredLabel per month."
+            } else {
+                null
+            }
+        }
+    }
+
+    LaunchedEffect(initialGoal?.id, minimumMonthlyRequired) {
+        if (minimumMonthlyRequired <= 0.0) return@LaunchedEffect
+        val currentValue = monthlyContribution.toDoubleOrNull()
+        if (monthlyContribution.isBlank() || currentValue == null || currentValue < minimumMonthlyRequired) {
+            monthlyContribution = formatGoalAmount(minimumMonthlyRequired)
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -347,7 +380,20 @@ private fun AddGoalDialog(
                     onValueChange = { monthlyContribution = it },
                     label = { Text(stringResource(R.string.goal_monthly_transfer_field)) },
                     modifier = Modifier.fillMaxWidth(),
+                    isError = monthlyContributionError != null,
                 )
+                Text(
+                    text = stringResource(R.string.goal_minimum_monthly_helper, minimumMonthlyRequiredLabel),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                monthlyContributionError?.let { message ->
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
                 OutlinedTextField(
                     value = contributionDay,
                     onValueChange = { contributionDay = it },
@@ -393,6 +439,26 @@ private fun AddGoalDialog(
             }
         },
     )
+}
+
+private fun calculateMinimumMonthlyRequired(
+    targetAmount: Double?,
+    currentSaved: Double,
+    monthsToDeadline: Int?,
+): Double {
+    if (targetAmount == null || targetAmount <= 0.0 || monthsToDeadline == null || monthsToDeadline <= 0) {
+        return 0.0
+    }
+    val remaining = (targetAmount - currentSaved).coerceAtLeast(0.0)
+    return ceil((remaining / monthsToDeadline) * 100.0) / 100.0
+}
+
+private fun formatGoalAmount(amount: Double): String {
+    return if (amount % 1.0 == 0.0) {
+        amount.toInt().toString()
+    } else {
+        String.format("%.2f", amount)
+    }
 }
 
 @Composable

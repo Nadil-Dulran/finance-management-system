@@ -2,16 +2,18 @@ package com.example.finance_management_system.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
 import com.example.finance_management_system.model.TransactionItem
 import com.example.finance_management_system.repository.FinanceRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class RecurringBillsViewModel(
-    private val financeRepository: FinanceRepository = AppContainer.financeRepository,
+@HiltViewModel
+class RecurringBillsViewModel @Inject constructor(
+    private val financeRepository: FinanceRepository,
 ) : ViewModel() {
 
     val recurringBills: StateFlow<List<TransactionItem>> = financeRepository

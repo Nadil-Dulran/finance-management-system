@@ -5,11 +5,11 @@ import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,7 +50,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
     }
     val googleSignInClient = remember { GoogleSignIn.getClient(context, gso) }
 
-    val authViewModel: AuthViewModel = viewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
 
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -158,7 +158,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.Dashboard.route) {
-            val viewModel: DashboardViewModel = viewModel()
+            val viewModel: DashboardViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
             DashboardScreen(
                 uiState = uiState,
@@ -178,7 +178,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.AddIncome.route) {
-            val viewModel: AddIncomeViewModel = viewModel()
+            val viewModel: AddIncomeViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
             AddIncomeScreen(
                 uiState = uiState,
@@ -202,7 +202,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.AddExpense.route) {
-            val viewModel: AddExpenseViewModel = viewModel()
+            val viewModel: AddExpenseViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
             AddExpenseScreen(
                 uiState = uiState,
@@ -229,7 +229,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.Transactions.route) {
-            val viewModel: TransactionsViewModel = viewModel()
+            val viewModel: TransactionsViewModel = hiltViewModel()
             val transactions = viewModel.transactions.collectAsStateWithLifecycle().value
             val detectedTransactions = viewModel.detectedTransactions.collectAsStateWithLifecycle().value
             val insights = viewModel.insights.collectAsStateWithLifecycle().value
@@ -258,7 +258,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.RecurringBills.route) {
-            val viewModel: RecurringBillsViewModel = viewModel()
+            val viewModel: RecurringBillsViewModel = hiltViewModel()
             val bills = viewModel.recurringBills.collectAsStateWithLifecycle().value
             RecurringBillsScreen(
                 bills = bills,
@@ -276,7 +276,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.Goal.route) {
-            val viewModel: GoalViewModel = viewModel()
+            val viewModel: GoalViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
             GoalScreen(
                 uiState = uiState,
@@ -296,7 +296,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.Settings.route) {
-            val viewModel: SettingsViewModel = viewModel()
+            val viewModel: SettingsViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
             SettingsScreen(
                 uiState = uiState,
@@ -306,7 +306,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
         }
 
         composable(AppDestination.Profile.route) {
-            val viewModel: ProfileViewModel = viewModel()
+            val viewModel: ProfileViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
             val context = LocalContext.current
             ProfileScreen(

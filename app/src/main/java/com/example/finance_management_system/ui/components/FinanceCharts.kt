@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -114,7 +115,7 @@ fun PieChartCard(
             Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
                 Canvas(
                     modifier = Modifier
-                        .size(140.dp)
+                        .size(100.dp)
                         .aspectRatio(1f),
                 ) {
                     var startAngle = -90f
@@ -125,7 +126,7 @@ fun PieChartCard(
                             startAngle = startAngle,
                             sweepAngle = sweepAngle,
                             useCenter = false,
-                            style = Stroke(width = 42f, cap = StrokeCap.Round),
+                            style = Stroke(width = 28f, cap = StrokeCap.Round),
                         )
                         startAngle += sweepAngle
                     }
@@ -161,6 +162,7 @@ fun PieChartCard(
                                     overflow = TextOverflow.Ellipsis,
                                 )
                             }
+                            Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 item.valueLabel,
                                 modifier = Modifier.widthIn(min = 0.dp),

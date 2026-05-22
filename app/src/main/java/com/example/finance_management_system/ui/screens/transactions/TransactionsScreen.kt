@@ -68,6 +68,7 @@ fun TransactionsScreen(
     var editingTransaction by remember { mutableStateOf<TransactionItem?>(null) }
     var confirmingDetected by remember { mutableStateOf<DetectedTransactionItem?>(null) }
     var transactionPendingDelete by remember { mutableStateOf<TransactionItem?>(null) }
+    val latestTransaction = transactions.firstOrNull()
 
     LaunchedEffect(message) {
         if (message != null) onConsumeMessage()
@@ -90,14 +91,14 @@ fun TransactionsScreen(
                 GradientHeroCard(
                     eyebrow = "HISTORY",
                     title = "Recent Activity",
-                    amount = transactions.firstOrNull()?.amountLabel ?: "LKR 0.00",
-                    subtitle = stringResource(R.string.history_copy),
+                    amount = latestTransaction?.amountLabel ?: "LKR 0.00",
+                    subtitle = latestTransaction?.title ?: stringResource(R.string.history_copy),
                     modifier = Modifier.fillMaxWidth(),
                     accent = {
                         AssistChip(
                             onClick = {},
-                            label = { Text("This Month") },
-                            leadingIcon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
+                            label = { Text("This Month", color = Color.White) },
+                            leadingIcon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null, tint = Color.White) },
                         )
                     },
                 )
@@ -173,6 +174,7 @@ fun TransactionsScreen(
                             Text(
                                 text = stringResource(R.string.dashboard_spend_vs_left_title),
                                 fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = spendingStatus,
@@ -204,8 +206,15 @@ fun TransactionsScreen(
                             .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        Text(insight.title, fontWeight = FontWeight.SemiBold)
-                        Text(insight.description, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            text = insight.title,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text = insight.description,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
             }

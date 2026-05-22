@@ -64,15 +64,15 @@ fun DashboardScreen(
             item {
                 GradientHeroCard(
                     eyebrow = "STATISTICS",
-                    title = "Spending Analysis",
+                    title = "Monthly Balance",
                     amount = freeCashSummary?.amountLabel ?: "LKR 0.00",
                     subtitle = incomeSummary?.let { "Income: ${it.amountLabel}" } ?: "Income: LKR 0.00",
                     modifier = Modifier.fillMaxWidth(),
                     accent = {
                         AssistChip(
                             onClick = {},
-                            label = { Text("This Month") },
-                            leadingIcon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
+                            label = { Text("This Month", color = Color.White) },
+                            leadingIcon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null, tint = Color.White) },
                         )
                     },
                 )

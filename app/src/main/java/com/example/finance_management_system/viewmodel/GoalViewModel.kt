@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import com.example.finance_management_system.util.aggregateGoalsOverview
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -32,12 +33,11 @@ class GoalViewModel @Inject constructor(
     }
 
     val uiState: StateFlow<GoalUiState> = combine(
-        repository.observePrimaryGoal(),
         repository.observeGoals(),
         statusState,
-    ) { overview, goals, status ->
+    ) { goals, status ->
         status.copy(
-            overview = overview,
+            overview = aggregateGoalsOverview(goals),
             goals = goals,
         )
     }

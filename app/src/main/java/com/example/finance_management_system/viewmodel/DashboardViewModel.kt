@@ -16,6 +16,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import com.example.finance_management_system.util.aggregateGoalsOverview
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -89,8 +90,8 @@ class DashboardViewModel @Inject constructor(
 
     val uiState: StateFlow<DashboardUiState> = combine(
         dashboardBundleWithSpendState,
-        goalRepository.observePrimaryGoal(),
-    ) { bundle: DashboardBundle, featuredGoal: GoalOverview? ->
+        goalRepository.observeGoals(),
+    ) { bundle: DashboardBundle, goals: List<GoalOverview> ->
         DashboardUiState(
             summaryCards = bundle.summary,
             insightItems = bundle.insights,
@@ -99,7 +100,7 @@ class DashboardViewModel @Inject constructor(
             spendingSplitChart = bundle.spendingSplitChart,
             spendVsLeftChart = bundle.spendVsLeftChart,
             spendVsLeftMessage = bundle.spendVsLeftMessage,
-            featuredGoal = featuredGoal,
+            featuredGoal = aggregateGoalsOverview(goals),
             recentTransactions = bundle.transactions,
         )
     }.stateIn(

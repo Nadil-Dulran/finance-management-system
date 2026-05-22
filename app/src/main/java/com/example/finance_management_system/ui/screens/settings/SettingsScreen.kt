@@ -4,22 +4,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.finance_management_system.R
 import com.example.finance_management_system.model.supportedCurrencies
 import com.example.finance_management_system.ui.components.AppScaffold
+import com.example.finance_management_system.ui.components.FrostedBadge
 import com.example.finance_management_system.ui.components.DropdownField
+import com.example.finance_management_system.ui.components.GradientHeroCard
 import com.example.finance_management_system.ui.state.SettingsUiState
 
 @Composable
@@ -39,11 +43,25 @@ fun SettingsScreen(
         currentRoute = null,
         showBottomBar = false,
         onBottomNavClick = {},
+        showTopBar = false,
     ) { modifier ->
         Column(
             modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            GradientHeroCard(
+                eyebrow = stringResource(R.string.settings_title).uppercase(),
+                title = stringResource(R.string.settings_title),
+                amount = selectedCurrency,
+                subtitle = stringResource(R.string.settings_display_currency),
+                modifier = Modifier.fillMaxWidth(),
+                accent = {
+                    FrostedBadge(
+                        text = stringResource(R.string.settings_title),
+                        icon = Icons.Outlined.Settings,
+                    )
+                },
+            )
             Text(
                 text = stringResource(R.string.settings_copy),
                 style = MaterialTheme.typography.bodyLarge,

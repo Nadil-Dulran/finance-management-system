@@ -38,6 +38,8 @@ import com.example.finance_management_system.ui.components.FrostedBadge
 import com.example.finance_management_system.ui.components.GradientHeroCard
 import com.example.finance_management_system.ui.components.MetricCard
 import com.example.finance_management_system.ui.state.GoalUiState
+import com.example.finance_management_system.data.currency.CurrencyConverter
+import com.example.finance_management_system.util.calculateTotalMonthlyNeeded
 import kotlin.math.ceil
 
 @Composable
@@ -53,9 +55,14 @@ fun GoalScreen(
     currentRoute: String,
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
-    var emergencyGoalId by remember { mutableStateOf<String?>(null) }
+    var emergencyGoal by remember { mutableStateOf<GoalOverview?>(null) }
     var editingGoal by remember { mutableStateOf<GoalOverview?>(null) }
     var goalPendingDelete by remember { mutableStateOf<GoalOverview?>(null) }
+    val monthlyNeededAmount = calculateTotalMonthlyNeeded(uiState.goals)
+    val monthlyNeededLabel = CurrencyConverter.format(
+        monthlyNeededAmount,
+        uiState.overview?.targetAmountLabel?.takeWhile { it.isLetter() }.orEmpty().ifBlank { "LKR" },
+    )
 
     AppScaffold(
         title = stringResource(R.string.goal_title),
@@ -73,8 +80,8 @@ fun GoalScreen(
             item {
                 GradientHeroCard(
                     eyebrow = "GOALS",
-                    title = "Savings Plan",
-                    amount = uiState.overview?.currentSavedLabel ?: "LKR 0.00",
+                    title = "Monthly Savings Needed",
+                    amount = monthlyNeededLabel,
                     subtitle = uiState.overview?.remainingAmountLabel?.let { "Remaining: $it" } ?: "Set a goal and start tracking progress",
                     modifier = Modifier.fillMaxWidth(),
                     accent = {
@@ -153,7 +160,7 @@ fun GoalScreen(
                     goal = goal,
                     onEdit = { editingGoal = goal },
                     onDelete = { goalPendingDelete = goal },
-                    onEmergencyWithdraw = { emergencyGoalId = goal.id },
+                    onEmergencyWithdraw = { emergencyGoal = goal },
                 )
             }
         }
@@ -178,12 +185,13 @@ fun GoalScreen(
         )
     }
 
-    emergencyGoalId?.let { goalId ->
+    emergencyGoal?.let { goal ->
         EmergencyWithdrawDialog(
-            onDismiss = { emergencyGoalId = null },
+            maxWithdrawableAmount = goal.currentSavedLkr,
+            onDismiss = { emergencyGoal = null },
             onSave = { amount ->
-                onEmergencyWithdraw(goalId, amount)
-                emergencyGoalId = null
+                onEmergencyWithdraw(goal.id, amount)
+                emergencyGoal = null
             },
         )
     }
@@ -463,10 +471,25 @@ private fun formatGoalAmount(amount: Double): String {
 
 @Composable
 private fun EmergencyWithdrawDialog(
+    maxWithdrawableAmount: Double,
     onDismiss: () -> Unit,
     onSave: (String) -> Unit,
 ) {
     var amount by remember { mutableStateOf("") }
+    var hasInteracted by remember { mutableStateOf(false) }
+    val withdrawalError by remember(amount, maxWithdrawableAmount, hasInteracted) {
+        derivedStateOf {
+            if (!hasInteracted) return@derivedStateOf null
+
+            val parsedAmount = amount.toDoubleOrNull()
+            when {
+                amount.isBlank() || parsedAmount == null || parsedAmount <= 0.0 -> "Enter a valid withdrawal amount"
+                parsedAmount > maxWithdrawableAmount -> "Withdrawal amount exceeds available savings"
+                else -> null
+            }
+        }
+    }
+    val canWithdraw = withdrawalError == null && amount.toDoubleOrNull() != null
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -479,14 +502,28 @@ private fun EmergencyWithdrawDialog(
                 )
                 OutlinedTextField(
                     value = amount,
-                    onValueChange = { amount = it },
+                    onValueChange = {
+                        amount = it
+                        hasInteracted = true
+                    },
                     label = { Text(stringResource(R.string.goal_emergency_amount_field)) },
                     modifier = Modifier.fillMaxWidth(),
+                    isError = withdrawalError != null,
                 )
+                withdrawalError?.let { message ->
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
         },
         confirmButton = {
-            Button(onClick = { onSave(amount) }) {
+            Button(
+                enabled = canWithdraw,
+                onClick = { if (canWithdraw) onSave(amount) },
+            ) {
                 Text(stringResource(R.string.button_save))
             }
         },

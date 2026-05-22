@@ -173,6 +173,7 @@ fun TransactionsScreen(
                             Text(
                                 text = stringResource(R.string.dashboard_spend_vs_left_title),
                                 fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = spendingStatus,
@@ -204,8 +205,15 @@ fun TransactionsScreen(
                             .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        Text(insight.title, fontWeight = FontWeight.SemiBold)
-                        Text(insight.description, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            text = insight.title,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text = insight.description,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
             }

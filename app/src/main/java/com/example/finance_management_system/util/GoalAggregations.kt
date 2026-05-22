@@ -17,6 +17,21 @@ fun calculateTotalRemaining(goals: List<GoalOverview>): Double = goals.sumOf { (
 
 fun calculateTotalMonthlyGoalContribution(goals: List<GoalOverview>): Double = goals.sumOf { it.monthlyContributionLkr }
 
+fun calculateTotalMonthlyNeeded(goals: List<GoalOverview>): Double {
+    return goals.sumOf { goal ->
+        if (goal.isCompleted || goal.monthsRemaining <= 0) {
+            0.0
+        } else {
+            val remaining = (goal.targetAmountLkr - goal.currentSavedLkr).coerceAtLeast(0.0)
+            if (remaining <= 0.0) {
+                0.0
+            } else {
+                remaining / goal.monthsRemaining
+            }
+        }
+    }
+}
+
 /**
  * Produce an aggregated GoalOverview representing totals across all provided goals.
  * Returns null when the list is empty.

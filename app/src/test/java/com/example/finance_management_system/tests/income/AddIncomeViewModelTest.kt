@@ -42,6 +42,40 @@ class AddIncomeViewModelTest {
     }
 
     @Test
+    fun saveMultiCurrencyIncome_passesOriginalCurrencyAndAmountToRepository() {
+        runTest {
+            // Set up a USD income entry as shown in the requirement
+            val source = "Freelance"
+            val amount = "100.0"
+            val currency = "USD"
+            val note = "Web design payout"
+
+            viewModel.updateSource(source)
+            viewModel.updateAmount(amount)
+            viewModel.updateCurrency(currency)
+            viewModel.updateNote(note)
+
+            // Save the income
+            var savedCalled = false
+            viewModel.save { savedCalled = true }
+            advanceUntilIdle()
+
+            // Verify repository received original values
+            assertTrue("Income should be saved successfully", savedCalled)
+            val lastIncome = fakeRepository.lastAddedIncome
+            assertEquals("USD", lastIncome?.currency)
+            assertEquals(100.0, lastIncome?.amount ?: 0.0, 0.0)
+            assertEquals(source, lastIncome?.sourceType)
+            assertEquals(note, lastIncome?.note)
+
+            // Verify UI state resets correctly after success
+            val state = viewModel.uiState.value
+            assertEquals("", state.amount)
+            assertEquals(AppDefaults.SUCCESS_INCOME_SAVED, state.successMessage)
+        }
+    }
+
+    @Test
     fun saveMultiSourceIncome_savesWithCorrectSource() {
         runTest {
             val sources = listOf("Freelance", "AdSense", "Crypto")

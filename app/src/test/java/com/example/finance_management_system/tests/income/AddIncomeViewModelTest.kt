@@ -101,6 +101,7 @@ class AddIncomeViewModelTest {
         override fun observeRecurringExpenses(): Flow<List<TransactionItem>> = flowOf(emptyList())
         override fun observeDetectedTransactions(): Flow<List<DetectedTransactionItem>> = flowOf(emptyList())
         override suspend fun seedDemoDataIfNeeded() {}
+
         override suspend fun addExpense(
             category: String,
             amount: Double,
@@ -111,6 +112,7 @@ class AddIncomeViewModelTest {
             accountName: String,
             note: String
         ): Result<Unit> = Result.success(Unit)
+
         override suspend fun refreshRecurringExpensesIfNeeded() {}
         override suspend fun ingestDetectedTransaction(
             packageName: String,
@@ -118,6 +120,7 @@ class AddIncomeViewModelTest {
             body: String,
             postedAt: Long
         ) {}
+
         override suspend fun confirmDetectedTransaction(
             id: String,
             chosenType: String,

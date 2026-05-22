@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -70,6 +71,60 @@ class AddExpenseViewModelTest {
         val state = viewModel.uiState.value
         assertEquals("", state.amount)
         assertEquals(AppDefaults.SUCCESS_EXPENSE_SAVED, state.successMessage)
+    }
+
+    @Test
+    fun save_withBlankAmount_showsErrorMessageAndDoesNotSave() = runTest {
+        // User inputs a blank amount
+        viewModel.updateAmount("")
+
+        // The save action is triggered
+        var onSavedCalled = false
+        viewModel.save { onSavedCalled = true }
+        advanceUntilIdle()
+
+        // Validation error
+        val state = viewModel.uiState.value
+        assertEquals(AppDefaults.ERROR_INVALID_EXPENSE, state.errorMessage)
+
+        // Record is not saved
+        assertTrue("onSaved callback should NOT be invoked", !onSavedCalled)
+        assertNull("Repository should not have received any expense", fakeRepository.lastAddedExpense)
+    }
+
+    @Test
+    fun save_withInvalidAmount_showsErrorMessageAndDoesNotSave() = runTest {
+        // Invalid amount (non-numeric)
+        viewModel.updateAmount("abc")
+
+        // Save action
+        var onSavedCalled = false
+        viewModel.save { onSavedCalled = true }
+        advanceUntilIdle()
+
+        // Validation error
+        val state = viewModel.uiState.value
+        assertEquals(AppDefaults.ERROR_INVALID_EXPENSE, state.errorMessage)
+
+        // Not saved
+        assertTrue("onSaved callback should NOT be invoked", !onSavedCalled)
+        assertNull("Repository should not have received any expense", fakeRepository.lastAddedExpense)
+    }
+
+    @Test
+    fun save_withZeroAmount_showsErrorMessageAndDoesNotSave() = runTest {
+        // User inputs zero amount
+        viewModel.updateAmount("0")
+
+        var onSavedCalled = false
+        viewModel.save { onSavedCalled = true }
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(AppDefaults.ERROR_INVALID_EXPENSE, state.errorMessage)
+
+        assertTrue("onSaved callback should NOT be invoked", !onSavedCalled)
+        assertNull("Repository should not have received any expense", fakeRepository.lastAddedExpense)
     }
 
     private class FakeFinanceRepository : FinanceRepository {

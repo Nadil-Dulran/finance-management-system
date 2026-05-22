@@ -43,7 +43,7 @@ class AddExpenseViewModelTest {
 
     @Test
     fun saveExpense_withCategoryAndPaymentMethod_savesSuccessfullyAndResetsAmount() = runTest {
-        // Given: User inputs category, amount, and payment method
+        // User inputs category, amount and payment method
         val category = "Dining"
         val amount = "1250.0"
         val paymentMethod = "Credit Card"
@@ -54,12 +54,10 @@ class AddExpenseViewModelTest {
         viewModel.updatePaymentMethod(paymentMethod)
         viewModel.updateNote(note)
 
-        // When: The save action is triggered
         var onSavedCalled = false
         viewModel.save { onSavedCalled = true }
         advanceUntilIdle()
 
-        // Then: The expense is saved to the repository with correct details
         assertTrue("onSaved callback should be invoked", onSavedCalled)
         val lastExpense = fakeRepository.lastAddedExpense
         assertEquals(category, lastExpense?.category)

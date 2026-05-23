@@ -54,29 +54,31 @@ class LocalFinanceRepository @Inject constructor(
 ) : FinanceRepository {
     override fun observeDashboardSummary(): Flow<List<SummaryCard>> {
         return scopedFinanceData { incomes, expenses, goals, preferredCurrency, rates ->
-            val actualExpenses = expenses.filterNot { it.isRecurringTemplate }
-            val incomeTotal = incomes.sumOf { it.amountLkr }
-            val expenseTotal = actualExpenses.sumOf { it.amountLkr }
-            val reservedTotal = goals.sumOf { it.currentSavedLkr }
-            val available = incomeTotal - expenseTotal - reservedTotal
+            val totals = calculateFinanceTotals(incomes, expenses, goals)
 
             listOf(
                 SummaryCard(
                     title = "Income recorded",
-                    amountLabel = formatDisplayCurrency(incomeTotal, preferredCurrency, rates),
+                    amountLabel = formatDisplayCurrency(totals.incomeTotal, preferredCurrency, rates),
                     description = "All income added to this account",
                 ),
                 SummaryCard(
                     title = "Expenses recorded",
-                    amountLabel = formatDisplayCurrency(expenseTotal, preferredCurrency, rates),
+                    amountLabel = formatDisplayCurrency(totals.expenseTotal, preferredCurrency, rates),
                     description = "Spent so far across all expense entries",
                 ),
                 SummaryCard(
                     title = "Estimated free cash",
-                    amountLabel = formatDisplayCurrency(max(available, 0.0), preferredCurrency, rates),
+                    amountLabel = formatDisplayCurrency(max(totals.availableFreeCash, 0.0), preferredCurrency, rates),
                     description = "Remaining amount after expenses and goal reserves",
                 ),
             )
+        }
+    }
+
+    override fun observeAvailableFreeCash(): Flow<Double> {
+        return scopedFinanceData { incomes, expenses, goals, _, _ ->
+            calculateFinanceTotals(incomes, expenses, goals).availableFreeCash
         }
     }
 
@@ -157,15 +159,12 @@ class LocalFinanceRepository @Inject constructor(
 
     fun observeSpendVsLeftChart(): Flow<List<ChartDatum>> {
         return scopedFinanceData { incomes, expenses, goals, preferredCurrency, rates ->
-            val actualExpenses = expenses.filterNot { it.isRecurringTemplate }
-            val spent = actualExpenses.sumOf { it.amountLkr }
-            val reserved = goals.sumOf { it.currentSavedLkr }
-            val income = incomes.sumOf { it.amountLkr }
-            val left = max(income - spent - reserved, 0.0)
+            val totals = calculateFinanceTotals(incomes, expenses, goals)
+            val left = max(totals.availableFreeCash, 0.0)
 
             listOf(
-                ChartDatum("Spent", spent, formatDisplayCurrency(spent, preferredCurrency, rates)),
-                ChartDatum("Reserved", reserved, formatDisplayCurrency(reserved, preferredCurrency, rates)),
+                ChartDatum("Spent", totals.expenseTotal, formatDisplayCurrency(totals.expenseTotal, preferredCurrency, rates)),
+                ChartDatum("Reserved", totals.reservedTotal, formatDisplayCurrency(totals.reservedTotal, preferredCurrency, rates)),
                 ChartDatum("Left", left, formatDisplayCurrency(left, preferredCurrency, rates)),
             )
         }
@@ -173,16 +172,13 @@ class LocalFinanceRepository @Inject constructor(
 
     fun observeSpendVsLeftMessage(): Flow<String> {
         return scopedFinanceData { incomes, expenses, goals, preferredCurrency, rates ->
-            val actualExpenses = expenses.filterNot { it.isRecurringTemplate }
-            val spent = actualExpenses.sumOf { it.amountLkr }
-            val reserved = goals.sumOf { it.currentSavedLkr }
-            val income = incomes.sumOf { it.amountLkr }
-            val left = income - spent - reserved
+            val totals = calculateFinanceTotals(incomes, expenses, goals)
+            val left = totals.availableFreeCash
 
             if (left >= 0.0) {
-                "You've spent ${formatDisplayCurrency(spent, preferredCurrency, rates)}, reserved ${formatDisplayCurrency(reserved, preferredCurrency, rates)} for goals, and still have ${formatDisplayCurrency(left, preferredCurrency, rates)} left."
+                "You've spent ${formatDisplayCurrency(totals.expenseTotal, preferredCurrency, rates)}, reserved ${formatDisplayCurrency(totals.reservedTotal, preferredCurrency, rates)} for goals, and still have ${formatDisplayCurrency(left, preferredCurrency, rates)} left."
             } else {
-                "You've spent ${formatDisplayCurrency(spent, preferredCurrency, rates)} and reserved ${formatDisplayCurrency(reserved, preferredCurrency, rates)}, which puts you ${formatDisplayCurrency(kotlin.math.abs(left), preferredCurrency, rates)} over recorded income."
+                "You've spent ${formatDisplayCurrency(totals.expenseTotal, preferredCurrency, rates)} and reserved ${formatDisplayCurrency(totals.reservedTotal, preferredCurrency, rates)}, which puts you ${formatDisplayCurrency(kotlin.math.abs(left), preferredCurrency, rates)} over recorded income."
             }
         }
     }
@@ -642,6 +638,32 @@ class LocalFinanceRepository @Inject constructor(
                 )
             }
         }
+    }
+
+    private data class FinanceTotals(
+        val incomeTotal: Double,
+        val expenseTotal: Double,
+        val reservedTotal: Double,
+        val availableFreeCash: Double,
+    )
+
+    private fun calculateFinanceTotals(
+        incomes: List<IncomeEntity>,
+        expenses: List<ExpenseEntity>,
+        goals: List<GoalEntity>,
+    ): FinanceTotals {
+        val actualExpenses = expenses.filterNot { it.isRecurringTemplate }
+        val incomeTotal = incomes.sumOf { it.amountLkr }
+        val expenseTotal = actualExpenses.sumOf { it.amountLkr }
+        val reservedTotal = goals.sumOf { it.currentSavedLkr }
+        val availableFreeCash = incomeTotal - expenseTotal - reservedTotal
+
+        return FinanceTotals(
+            incomeTotal = incomeTotal,
+            expenseTotal = expenseTotal,
+            reservedTotal = reservedTotal,
+            availableFreeCash = availableFreeCash,
+        )
     }
 
     private fun nextOccurrenceTime(baseTime: Long, recurrenceType: String): Long {

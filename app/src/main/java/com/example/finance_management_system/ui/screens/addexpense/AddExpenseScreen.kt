@@ -136,7 +136,9 @@ fun AddExpenseScreen(
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 3,
                     )
-                    uiState.errorMessage?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                    (uiState.amountValidationMessage ?: uiState.errorMessage)?.let {
+                        Text(it, color = MaterialTheme.colorScheme.error)
+                    }
                     uiState.successMessage?.let { Text(it, color = MaterialTheme.colorScheme.primary) }
                 }
             }
@@ -144,7 +146,7 @@ fun AddExpenseScreen(
             Button(
                 onClick = onSave,
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isSaving,
+                enabled = !uiState.isSaving && uiState.isAmountValid,
             ) {
                 Text(
                     if (uiState.isSaving) stringResource(R.string.button_saving)

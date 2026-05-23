@@ -13,6 +13,7 @@ object AppDefaults {
 
     const val ERROR_INVALID_INCOME = "Enter a valid income amount."
     const val ERROR_INVALID_EXPENSE = "Enter a valid expense amount."
+    const val ERROR_EXPENSE_EXCEEDS_FREE_CASH = "Expense exceeds available free cash"
     const val SUCCESS_INCOME_SAVED = "Income saved successfully."
     const val SUCCESS_EXPENSE_SAVED = "Expense saved successfully."
     const val SUCCESS_TRANSACTION_UPDATED = "Transaction updated."

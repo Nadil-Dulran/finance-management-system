@@ -10,6 +10,8 @@ data class EntryFormUiState(
     val note: String = "",
     val helperText: String = "",
     val isSaving: Boolean = false,
+    val isAmountValid: Boolean = false,
+    val amountValidationMessage: String? = null,
     val errorMessage: String? = null,
     val successMessage: String? = null,
 )

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FinanceRepository {
     fun observeDashboardSummary(): Flow<List<SummaryCard>>
+    fun observeAvailableFreeCash(): Flow<Double>
     fun observeExpenseChart(): Flow<List<ChartDatum>>
     fun observeIncomeChart(): Flow<List<ChartDatum>>
     fun observeRecentTransactions(): Flow<List<TransactionItem>>

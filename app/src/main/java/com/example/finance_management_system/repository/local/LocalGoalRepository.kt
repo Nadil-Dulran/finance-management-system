@@ -1,41 +1,36 @@
 package com.example.finance_management_system.repository.local
 
-import android.util.Log
 import com.example.finance_management_system.data.currency.CurrencyConverter
 import com.example.finance_management_system.data.currency.ExchangeRateRepository
 import com.example.finance_management_system.data.local.dao.GoalDao
 import com.example.finance_management_system.data.local.entity.GoalEntity
 import com.example.finance_management_system.data.preferences.UserPreferencesRepository
-import com.example.finance_management_system.data.remote.FirestoreSyncService
 import com.example.finance_management_system.data.session.AuthSessionManager
+import com.example.finance_management_system.data.sync.SyncEntityType
+import com.example.finance_management_system.data.sync.SyncQueueManager
 import com.example.finance_management_system.model.GoalOverview
 import com.example.finance_management_system.repository.GoalRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
 
-class LocalGoalRepository(
+@OptIn(ExperimentalCoroutinesApi::class)
+@Singleton
+class LocalGoalRepository @Inject constructor(
     private val goalDao: GoalDao,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val exchangeRateRepository: ExchangeRateRepository,
     private val authSessionManager: AuthSessionManager,
-    private val syncService: FirestoreSyncService,
+    private val syncQueueManager: SyncQueueManager,
 ) : GoalRepository {
-    private val syncScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    private companion object {
-        const val TAG = "LocalGoalRepository"
-    }
-
     override fun observePrimaryGoal(): Flow<GoalOverview?> {
         return authSessionManager.currentUser.flatMapLatest { user ->
             if (user == null) {
@@ -94,7 +89,7 @@ class LocalGoalRepository(
             createdAt = System.currentTimeMillis(),
         )
         goalDao.upsert(goal)
-        launchSync { syncService.pushGoal(userId, goal) }
+        syncQueueManager.enqueueUpsert(userId, SyncEntityType.GOAL, goal.id)
     }
 
     override suspend fun updateGoal(
@@ -119,14 +114,14 @@ class LocalGoalRepository(
             deadlineAt = monthsFromNow(monthsToDeadline),
         )
         goalDao.upsert(updated)
-        launchSync { syncService.pushGoal(userId, updated) }
+        syncQueueManager.enqueueUpsert(userId, SyncEntityType.GOAL, updated.id)
     }
 
     override suspend fun deleteGoal(goalId: String): Result<Unit> = runCatching {
         val userId = authSessionManager.currentUserValue?.uid ?: error("No signed-in user.")
         val goal = goalDao.getGoalById(goalId, userId) ?: error("Goal not found.")
         goalDao.delete(goal)
-        launchSync { syncService.deleteGoal(userId, goalId) }
+        syncQueueManager.enqueueDelete(userId, SyncEntityType.GOAL, goalId)
     }
 
     override suspend fun applyEmergencyWithdrawal(goalId: String, amount: Double): Result<Unit> = runCatching {
@@ -140,7 +135,7 @@ class LocalGoalRepository(
             emergencyUsedLkr = goal.emergencyUsedLkr + amount,
         )
         goalDao.upsert(updated)
-        launchSync { syncService.pushGoal(userId, updated) }
+        syncQueueManager.enqueueUpsert(userId, SyncEntityType.GOAL, updated.id)
     }
 
     override suspend fun refreshGoalContributionsIfNeeded() {
@@ -164,7 +159,7 @@ class LocalGoalRepository(
                     lastContributionAt = now.timeInMillis,
                 )
                 goalDao.upsert(updated)
-                launchSync { syncService.pushGoal(userId, updated) }
+                syncQueueManager.enqueueUpsert(userId, SyncEntityType.GOAL, updated.id)
             }
         }
     }
@@ -181,7 +176,7 @@ class LocalGoalRepository(
         }
         legacyGoals.forEach { goal ->
             goalDao.delete(goal)
-            launchSync { syncService.deleteGoal(userId, goal.id) }
+            runCatching { syncQueueManager.enqueueDelete(userId, SyncEntityType.GOAL, goal.id) }
         }
     }
 
@@ -247,12 +242,5 @@ class LocalGoalRepository(
         val rateToLkr = rates[currencyCode] ?: return CurrencyConverter.format(amountLkr, "LKR")
         val converted = CurrencyConverter.fromLkr(amountLkr, rateToLkr)
         return CurrencyConverter.format(converted, currencyCode)
-    }
-
-    private fun launchSync(block: suspend () -> Unit) {
-        syncScope.launch {
-            runCatching { block() }
-                .onFailure { throwable -> Log.w(TAG, "Firestore sync failed", throwable) }
-        }
     }
 }

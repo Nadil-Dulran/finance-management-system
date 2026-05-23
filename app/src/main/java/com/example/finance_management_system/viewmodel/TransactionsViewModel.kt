@@ -2,13 +2,14 @@ package com.example.finance_management_system.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
 import com.example.finance_management_system.model.AppDefaults
 import com.example.finance_management_system.model.DetectedTransactionItem
 import com.example.finance_management_system.model.InsightItem
 import com.example.finance_management_system.model.TransactionItem
 import com.example.finance_management_system.repository.FinanceRepository
 import com.example.finance_management_system.repository.local.LocalFinanceRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +19,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TransactionsViewModel(
-    private val repository: FinanceRepository = AppContainer.financeRepository,
+@HiltViewModel
+class TransactionsViewModel @Inject constructor(
+    private val repository: FinanceRepository,
 ) : ViewModel() {
     private val localRepository = repository as? LocalFinanceRepository
 

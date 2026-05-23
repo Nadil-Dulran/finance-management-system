@@ -1,6 +1,6 @@
 package com.example.finance_management_system.repository.local
 
-import android.util.Log
+import android.content.Context
 import com.example.finance_management_system.data.currency.CurrencyConverter
 import com.example.finance_management_system.data.currency.ExchangeRateRepository
 import com.example.finance_management_system.data.local.dao.DetectedTransactionDao
@@ -14,24 +14,24 @@ import com.example.finance_management_system.data.local.entity.ExpenseEntity
 import com.example.finance_management_system.data.local.entity.IncomeEntity
 import com.example.finance_management_system.data.notification.NotificationHelper
 import com.example.finance_management_system.data.preferences.UserPreferencesRepository
-import com.example.finance_management_system.data.remote.FirestoreSyncService
 import com.example.finance_management_system.data.session.AuthSessionManager
+import com.example.finance_management_system.data.sync.SyncEntityType
+import com.example.finance_management_system.data.sync.SyncQueueManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import com.example.finance_management_system.model.ChartDatum
 import com.example.finance_management_system.model.InsightItem
 import com.example.finance_management_system.model.SummaryCard
 import com.example.finance_management_system.model.TransactionItem
 import com.example.finance_management_system.model.TransactionType
 import com.example.finance_management_system.repository.FinanceRepository
-import com.example.finance_management_system.data.AppContainer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.UUID
 import java.text.SimpleDateFormat
@@ -39,7 +39,9 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
 
-class LocalFinanceRepository(
+@OptIn(ExperimentalCoroutinesApi::class)
+@Singleton
+class LocalFinanceRepository @Inject constructor(
     private val incomeDao: IncomeDao,
     private val expenseDao: ExpenseDao,
     private val goalDao: GoalDao,
@@ -47,14 +49,9 @@ class LocalFinanceRepository(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val exchangeRateRepository: ExchangeRateRepository,
     private val authSessionManager: AuthSessionManager,
-    private val syncService: FirestoreSyncService,
+    private val syncQueueManager: SyncQueueManager,
+    @ApplicationContext private val appContext: Context,
 ) : FinanceRepository {
-    private val syncScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    private companion object {
-        const val TAG = "LocalFinanceRepository"
-    }
-
     override fun observeDashboardSummary(): Flow<List<SummaryCard>> {
         return scopedFinanceData { incomes, expenses, goals, preferredCurrency, rates ->
             val actualExpenses = expenses.filterNot { it.isRecurringTemplate }
@@ -350,7 +347,7 @@ class LocalFinanceRepository(
 
         legacyExpenses.forEach { expense ->
             expenseDao.delete(expense)
-            runCatching { syncService.deleteExpense(userId, expense.id) }
+            runCatching { syncQueueManager.enqueueDelete(userId, SyncEntityType.EXPENSE, expense.id) }
         }
     }
 
@@ -377,7 +374,7 @@ class LocalFinanceRepository(
             createdAt = now,
         )
         incomeDao.upsert(entity)
-        launchSync { syncService.pushIncome(userId, entity) }
+        syncQueueManager.enqueueUpsert(userId, SyncEntityType.INCOME, entity.id)
     }
 
     override suspend fun addExpense(
@@ -412,7 +409,7 @@ class LocalFinanceRepository(
                 createdAt = now,
             )
             expenseDao.upsert(entity)
-            launchSync { syncService.pushExpense(userId, entity) }
+            syncQueueManager.enqueueUpsert(userId, SyncEntityType.EXPENSE, entity.id)
         } else {
             val groupId = "recurring_${UUID.randomUUID()}"
             val template = ExpenseEntity(
@@ -438,10 +435,8 @@ class LocalFinanceRepository(
                 isRecurringTemplate = false,
             )
             expenseDao.upsertAll(listOf(template, firstOccurrence))
-            launchSync {
-                syncService.pushExpense(userId, template)
-                syncService.pushExpense(userId, firstOccurrence)
-            }
+            syncQueueManager.enqueueUpsert(userId, SyncEntityType.EXPENSE, template.id)
+            syncQueueManager.enqueueUpsert(userId, SyncEntityType.EXPENSE, firstOccurrence.id)
         }
     }
 
@@ -469,15 +464,15 @@ class LocalFinanceRepository(
                     createdAt = now,
                 )
                 generated += occurrence
-                if (userId != null) {
-                    runCatching { syncService.pushExpense(userId, occurrence) }
-                }
                 nextDueAt = nextOccurrenceTime(nextDueAt, template.recurrenceType)
             }
         }
 
         if (generated.isNotEmpty()) {
             expenseDao.upsertAll(generated)
+            generated.forEach { item ->
+                runCatching { syncQueueManager.enqueueUpsert(userId, SyncEntityType.EXPENSE, item.id) }
+            }
         }
     }
 
@@ -560,7 +555,7 @@ class LocalFinanceRepository(
                     note = transaction.note,
                 )
                 incomeDao.upsert(updated)
-                launchSync { syncService.pushIncome(userId, updated) }
+                syncQueueManager.enqueueUpsert(userId, SyncEntityType.INCOME, updated.id)
             }
             TransactionType.EXPENSE -> {
                 val existing = expenseDao.getById(transaction.id, userId) ?: error("Expense not found.")
@@ -576,7 +571,7 @@ class LocalFinanceRepository(
                     note = transaction.note,
                 )
                 expenseDao.upsert(updated)
-                launchSync { syncService.pushExpense(userId, updated) }
+                syncQueueManager.enqueueUpsert(userId, SyncEntityType.EXPENSE, updated.id)
             }
             TransactionType.GOAL_TRANSFER -> error("Automatic goal reserve entries cannot be edited here.")
         }
@@ -588,12 +583,12 @@ class LocalFinanceRepository(
             TransactionType.INCOME -> {
                 val existing = incomeDao.getById(transaction.id, userId) ?: error("Income not found.")
                 incomeDao.delete(existing)
-                launchSync { syncService.deleteIncome(userId, transaction.id) }
+                syncQueueManager.enqueueDelete(userId, SyncEntityType.INCOME, transaction.id)
             }
             TransactionType.EXPENSE -> {
                 val existing = expenseDao.getById(transaction.id, userId) ?: error("Expense not found.")
                 expenseDao.delete(existing)
-                launchSync { syncService.deleteExpense(userId, transaction.id) }
+                syncQueueManager.enqueueDelete(userId, SyncEntityType.EXPENSE, transaction.id)
             }
             TransactionType.GOAL_TRANSFER -> error("Automatic goal reserve entries cannot be deleted here.")
         }
@@ -621,7 +616,7 @@ class LocalFinanceRepository(
                 val amountLabel = CurrencyConverter.format(template.originalAmount, template.originalCurrency)
 
                 NotificationHelper.showBillReminder(
-                    context = AppContainer.appContext,
+                    context = appContext,
                     billTitle = template.category,
                     amountLabel = amountLabel,
                     dueDateLabel = dueDateLabel
@@ -683,10 +678,4 @@ class LocalFinanceRepository(
         return matchesRentProfile && matchesAmount
     }
 
-    private fun launchSync(block: suspend () -> Unit) {
-        syncScope.launch {
-            runCatching { block() }
-                .onFailure { throwable -> Log.w(TAG, "Firestore sync failed", throwable) }
-        }
-    }
 }

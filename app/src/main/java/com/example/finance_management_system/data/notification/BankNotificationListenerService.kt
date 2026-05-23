@@ -2,13 +2,19 @@ package com.example.finance_management_system.data.notification
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import com.example.finance_management_system.data.AppContainer
+import com.example.finance_management_system.repository.FinanceRepository
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class BankNotificationListenerService : NotificationListenerService() {
+    @Inject
+    lateinit var financeRepository: FinanceRepository
+
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
@@ -19,7 +25,7 @@ class BankNotificationListenerService : NotificationListenerService() {
         if (title.isBlank() && text.isBlank()) return
 
         serviceScope.launch {
-            AppContainer.financeRepository.ingestDetectedTransaction(
+            financeRepository.ingestDetectedTransaction(
                 packageName = sbn.packageName.orEmpty(),
                 title = title,
                 body = text,

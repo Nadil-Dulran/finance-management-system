@@ -11,15 +11,17 @@ import com.example.finance_management_system.data.remote.model.FirestoreGoal
 import com.example.finance_management_system.data.remote.model.FirestoreIncome
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
-class FirestoreSyncService(
+@Singleton
+class FirestoreSyncService @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val incomeDao: IncomeDao,
     private val expenseDao: ExpenseDao,
     private val goalDao: GoalDao,
 ) {
-
     suspend fun syncUserData(userId: String) {
         Log.d(TAG, "Starting full user sync for uid=$userId")
         syncIncome(userId)

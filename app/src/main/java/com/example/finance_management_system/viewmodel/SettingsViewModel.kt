@@ -2,9 +2,11 @@ package com.example.finance_management_system.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.data.AppContainer
+import com.example.finance_management_system.data.preferences.UserPreferencesRepository
 import com.example.finance_management_system.model.AppDefaults
 import com.example.finance_management_system.ui.state.SettingsUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,8 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SettingsViewModel : ViewModel() {
-    private val preferencesRepository = AppContainer.userPreferencesRepository
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val preferencesRepository: UserPreferencesRepository,
+) : ViewModel() {
     private val _statusState = MutableStateFlow(SettingsUiState())
 
     val uiState: StateFlow<SettingsUiState> = combine(

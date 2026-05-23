@@ -2,6 +2,7 @@ package com.example.finance_management_system.repository.firebase
 
 import android.content.Context
 import android.util.Log
+import com.example.finance_management_system.data.preferences.UserPreferencesRepository
 import com.example.finance_management_system.data.session.AuthSessionManager
 import com.example.finance_management_system.model.AppDefaults
 import com.example.finance_management_system.repository.AuthRepository
@@ -32,6 +33,7 @@ import kotlin.coroutines.resumeWithException
 class FirebaseAuthRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val authSessionManager: AuthSessionManager,
+    private val userPreferencesRepository: UserPreferencesRepository,
     @ApplicationContext private val appContext: Context,
 ) : AuthRepository {
 
@@ -54,6 +56,10 @@ class FirebaseAuthRepository @Inject constructor(
                 loginWithRest(normalizedEmail, password)
             }
             authSessionManager.setCurrentUser(user)
+            runCatching { userPreferencesRepository.saveAuthSession() }
+                .onFailure { throwable ->
+                    Log.w(TAG, "Failed to persist login session", throwable)
+                }
             user
         }.recoverCatching { throwable ->
             throw mapAuthException("login", throwable)
@@ -75,6 +81,10 @@ class FirebaseAuthRepository @Inject constructor(
                 registerWithRest(normalizedName, normalizedEmail, password)
             }
             authSessionManager.setCurrentUser(user)
+            runCatching { userPreferencesRepository.saveAuthSession() }
+                .onFailure { throwable ->
+                    Log.w(TAG, "Failed to persist registration session", throwable)
+                }
             user
         }.recoverCatching { throwable ->
             throw mapAuthException("register", throwable)
@@ -94,6 +104,10 @@ class FirebaseAuthRepository @Inject constructor(
                 email = user.email.orEmpty(),
             )
             authSessionManager.setCurrentUser(authUser)
+            runCatching { userPreferencesRepository.saveAuthSession() }
+                .onFailure { throwable ->
+                    Log.w(TAG, "Failed to persist Google login session", throwable)
+                }
             authUser
         }.recoverCatching { throwable ->
             throw mapAuthException("loginWithGoogle", throwable)

@@ -15,6 +15,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+data class AuthSessionState(
+    val isLoggedIn: Boolean,
+    val lastLoginTime: Long,
+    val userLoggedOut: Boolean,
+)
+
 private val Context.userPreferencesDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "user_preferences",
 )
@@ -33,6 +39,18 @@ class UserPreferencesRepository @Inject constructor(
 
     val cachedRates: Flow<Map<String, Double>> = context.userPreferencesDataStore.data.map { prefs ->
         decodeRates(prefs[KEY_CACHED_RATES])
+    }
+
+    val isLoggedIn: Flow<Boolean> = context.userPreferencesDataStore.data.map { prefs ->
+        prefs[KEY_IS_LOGGED_IN] ?: false
+    }
+
+    val lastLoginTime: Flow<Long> = context.userPreferencesDataStore.data.map { prefs ->
+        prefs[KEY_LAST_LOGIN_TIME] ?: 0L
+    }
+
+    val userLoggedOut: Flow<Boolean> = context.userPreferencesDataStore.data.map { prefs ->
+        prefs[KEY_USER_LOGGED_OUT] ?: true
     }
 
     suspend fun setPreferredCurrency(currency: String) {
@@ -66,11 +84,49 @@ class UserPreferencesRepository @Inject constructor(
         }.first()
     }
 
+    suspend fun getAuthSessionState(): AuthSessionState {
+        return context.userPreferencesDataStore.data.map { prefs ->
+            AuthSessionState(
+                isLoggedIn = prefs[KEY_IS_LOGGED_IN] ?: false,
+                lastLoginTime = prefs[KEY_LAST_LOGIN_TIME] ?: 0L,
+                userLoggedOut = prefs[KEY_USER_LOGGED_OUT] ?: true,
+            )
+        }.first()
+    }
+
+    suspend fun saveAuthSession(lastLoginTime: Long = System.currentTimeMillis()) {
+        context.userPreferencesDataStore.edit { prefs ->
+            prefs[KEY_IS_LOGGED_IN] = true
+            prefs[KEY_LAST_LOGIN_TIME] = lastLoginTime
+            prefs[KEY_USER_LOGGED_OUT] = false
+        }
+    }
+
+    suspend fun clearAuthSession() {
+        context.userPreferencesDataStore.edit { prefs ->
+            val loggedOut = prefs[KEY_USER_LOGGED_OUT] ?: true
+            prefs[KEY_IS_LOGGED_IN] = false
+            prefs[KEY_LAST_LOGIN_TIME] = 0L
+            prefs[KEY_USER_LOGGED_OUT] = loggedOut
+        }
+    }
+
+    suspend fun markUserLoggedOut() {
+        context.userPreferencesDataStore.edit { prefs ->
+            prefs[KEY_IS_LOGGED_IN] = false
+            prefs[KEY_LAST_LOGIN_TIME] = 0L
+            prefs[KEY_USER_LOGGED_OUT] = true
+        }
+    }
+
     private companion object {
         val KEY_PREFERRED_CURRENCY = stringPreferencesKey("preferred_currency")
         val KEY_ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
         val KEY_CACHED_RATES = stringPreferencesKey("cached_rates")
         val KEY_RATES_UPDATED_AT = longPreferencesKey("rates_updated_at")
+        val KEY_IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+        val KEY_LAST_LOGIN_TIME = longPreferencesKey("last_login_time")
+        val KEY_USER_LOGGED_OUT = booleanPreferencesKey("user_logged_out")
 
         fun encodeRates(rates: Map<String, Double>): String {
             return rates.entries.joinToString(";") { "${it.key}=${it.value}" }

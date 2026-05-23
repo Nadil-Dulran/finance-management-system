@@ -54,9 +54,13 @@ class ProfileViewModel @Inject constructor(
             initialValue = ProfileUiState(),
         )
 
-    fun signOut() {
-        auth.signOut()
-        sessionManager.clear()
+    fun signOut(onSignedOut: () -> Unit) {
+        viewModelScope.launch {
+            auth.signOut()
+            runCatching { preferences.markUserLoggedOut() }
+            sessionManager.clear()
+            onSignedOut()
+        }
     }
 
     fun deleteAccount(onSuccess: () -> Unit) {
@@ -75,6 +79,7 @@ class ProfileViewModel @Inject constructor(
                 firebaseUser.delete().await()
             }.onSuccess {
                 auth.signOut()
+                runCatching { preferences.markUserLoggedOut() }
                 sessionManager.clear()
                 statusState.update { it.copy(isDeletingAccount = false, message = null) }
                 onSuccess()

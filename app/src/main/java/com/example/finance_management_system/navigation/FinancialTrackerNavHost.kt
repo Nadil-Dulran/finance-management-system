@@ -40,7 +40,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 
 @Composable
-fun FinancialTrackerNavHost(navController: NavHostController) {
+fun FinancialTrackerNavHost(
+    navController: NavHostController,
+    startDestination: String = AppDestination.Landing.route,
+) {
     val context = LocalContext.current
     val gso = remember {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -76,7 +79,7 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = AppDestination.Landing.route,
+        startDestination = startDestination,
     ) {
         composable(AppDestination.Landing.route) {
             LandingScreen(
@@ -316,9 +319,10 @@ fun FinancialTrackerNavHost(navController: NavHostController) {
                     context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
                 },
                 onSignOut = {
-                    viewModel.signOut()
-                    navController.navigate(AppDestination.Landing.route) {
-                        popUpTo(0) { inclusive = true }
+                    viewModel.signOut {
+                        navController.navigate(AppDestination.Landing.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
                 },
                 onDeleteAccount = {

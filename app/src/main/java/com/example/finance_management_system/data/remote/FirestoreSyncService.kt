@@ -10,13 +10,17 @@ import com.example.finance_management_system.data.remote.model.FirestoreExpense
 import com.example.finance_management_system.data.remote.model.FirestoreGoal
 import com.example.finance_management_system.data.remote.model.FirestoreIncome
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
 @Singleton
 class FirestoreSyncService @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val incomeDao: IncomeDao,
     private val expenseDao: ExpenseDao,
@@ -24,6 +28,7 @@ class FirestoreSyncService @Inject constructor(
 ) {
     suspend fun syncUserData(userId: String) {
         Log.d(TAG, "Starting full user sync for uid=$userId")
+        ensureUserDocument(userId)
         syncIncome(userId)
         syncExpenses(userId)
         syncGoals(userId)
@@ -31,6 +36,7 @@ class FirestoreSyncService @Inject constructor(
     }
 
     suspend fun pushIncome(userId: String, entity: IncomeEntity) {
+        ensureUserDocument(userId)
         userCollection(userId)
             .collection(COLLECTION_INCOME)
             .document(entity.id)
@@ -39,6 +45,7 @@ class FirestoreSyncService @Inject constructor(
     }
 
     suspend fun pushExpense(userId: String, entity: ExpenseEntity) {
+        ensureUserDocument(userId)
         userCollection(userId)
             .collection(COLLECTION_EXPENSES)
             .document(entity.id)
@@ -47,6 +54,7 @@ class FirestoreSyncService @Inject constructor(
     }
 
     suspend fun pushGoal(userId: String, goal: GoalEntity) {
+        ensureUserDocument(userId)
         userCollection(userId)
             .collection(COLLECTION_GOALS)
             .document(goal.id)
@@ -84,6 +92,18 @@ class FirestoreSyncService @Inject constructor(
         userDoc.collection(COLLECTION_EXPENSES).get().await().documents.forEach { it.reference.delete().await() }
         userDoc.collection(COLLECTION_GOALS).get().await().documents.forEach { it.reference.delete().await() }
         userDoc.delete().await()
+    }
+
+    private suspend fun ensureUserDocument(userId: String) {
+        val user = firebaseAuth.currentUser
+        val userData = mapOf(
+            "email" to (user?.email ?: ""),
+            "createdAt" to FieldValue.serverTimestamp(),
+        )
+
+        userCollection(userId)
+            .set(userData, SetOptions.merge())
+            .await()
     }
 
     private suspend fun syncIncome(userId: String) {

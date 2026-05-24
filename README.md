@@ -74,6 +74,13 @@ app/src/main/java/com/example/finance_management_system/
 ```
 
 ## Notes
-The app uses Room for local persistence.
-Firebase is used for authentication and cloud sync.
-Notification access is optional and used for detecting bank transaction alerts.
+- The app uses Room for local persistence.
+- Firebase is used for authentication and cloud sync.
+- Notification access is optional and used for detecting bank transaction alerts.
+
+## APK Download
+- You can download the APK here:
+
+https://drive.google.com/file/d/1acHaFV1r5WCVAVGB9z5BMzom6_xamYZR/view
+
+

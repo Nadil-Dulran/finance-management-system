@@ -52,7 +52,7 @@ Add your Firebase config file:
   ```
   app/google-services.json
   ```
-  - Open the project in Android Studio and allow Gradle sync to finish.
+- Open the project in Android Studio and allow Gradle sync to finish.
 
 - Run the app from Android Studio, or build from terminal:
   ```

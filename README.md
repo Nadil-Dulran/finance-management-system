@@ -55,7 +55,9 @@ Open the project in Android Studio and allow Gradle sync to finish.
 Run the app from Android Studio, or build from terminal:
 
 ./gradlew :app:assembleDebug
-Project Structure
+
+## Project Structure
+
 app/src/main/java/com/example/finance_management_system/
 ├── assistant/
 ├── data/

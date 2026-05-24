@@ -172,6 +172,45 @@ Use Android Studio Run, or:
 ./gradlew :app:assembleDebug
 ```
 
+## APK Installation Guide
+
+### Requirements
+
+- Android `8.0 (API 26)` or above
+- Internet connection for first-time sign-in and sync
+- APK file provided by the project team
+
+### Steps to Install
+
+1. Transfer the APK to your Android device.
+2. Open the APK file.
+3. If Android blocks the installation, allow `Install unknown apps` for the app you are using to open the APK.
+4. If `Play Protect` shows a warning, temporarily disable the scan:
+   - Open `Google Play Store`
+   - Tap your profile icon
+   - Go to `Play Protect`
+   - Tap the `Settings` icon
+   - Turn off `Scan apps with Play Protect`
+5. Return to the APK and continue the installation.
+6. After the app is installed, open it and sign in / register.
+
+### Why Play Protect May Show a Warning
+
+This app is currently distributed as a sideloaded academic/demo APK instead of through the Google Play Store. It also includes a notification-listener feature used to detect bank transaction alerts from notifications. Because notification access is considered a sensitive Android capability, Play Protect may warn users before installation even when the app is intended for legitimate demo use.
+
+In this project, notification access is used only for finance-related alert detection inside the app. Users may need to disable Play Protect temporarily during installation because Android treats sideloaded apps with notification-listener features more cautiously than apps installed directly from Google Play.
+
+### Important Note
+
+- If Play Protect was turned off for installation, it is recommended to turn it `back on` after the app has been installed.
+- The app is intended for academic/demo use.
+
+### First Launch
+
+- Register a new account or log in with an existing account.
+- Make sure internet is available for authentication and Firebase sync.
+- After first sync, the app can continue working with local cached data.
+
 ## Password Reset Flow
 
 The reset password feature uses Firebase Authentication email recovery.

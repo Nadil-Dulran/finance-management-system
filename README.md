@@ -47,14 +47,17 @@ FlowLedger is an Android personal finance app built with Kotlin and Jetpack Comp
    cd finance-management-system
 Add your Firebase config file:
 
-Download google-services.json from Firebase
-Place it in:
-app/google-services.json
-Open the project in Android Studio and allow Gradle sync to finish.
+- Download google-services.json from Firebase
+- Place it in:
+  ```
+  app/google-services.json
+  Open the project in Android Studio and allow Gradle sync to finish.
+  ``` 
 
-Run the app from Android Studio, or build from terminal:
-
-./gradlew :app:assembleDebug
+- Run the app from Android Studio, or build from terminal:
+  ```
+  ./gradlew :app:assembleDebug
+  ``` 
 
 ## Project Structure
 ``` 

@@ -57,6 +57,7 @@ Run the app from Android Studio, or build from terminal:
 ./gradlew :app:assembleDebug
 
 ## Project Structure
+``` 
 
 app/src/main/java/com/example/finance_management_system/
 ├── assistant/
@@ -67,7 +68,9 @@ app/src/main/java/com/example/finance_management_system/
 ├── repository/
 ├── ui/
 └── viewmodel/
-Notes
+```
+
+## Notes
 The app uses Room for local persistence.
 Firebase is used for authentication and cloud sync.
 Notification access is optional and used for detecting bank transaction alerts.

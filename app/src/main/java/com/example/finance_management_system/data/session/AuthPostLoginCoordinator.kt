@@ -1,9 +1,9 @@
-package com.example.finance_management_system.data.session
+package com.tetrova_flowledger.data.session
 
 import android.util.Log
-import com.example.finance_management_system.data.remote.FirestoreSyncService
-import com.example.finance_management_system.data.sync.SyncQueueManager
-import com.example.finance_management_system.repository.local.LocalFinanceRepository
+import com.tetrova_flowledger.data.remote.FirestoreSyncService
+import com.tetrova_flowledger.data.sync.SyncQueueManager
+import com.tetrova_flowledger.repository.local.LocalFinanceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

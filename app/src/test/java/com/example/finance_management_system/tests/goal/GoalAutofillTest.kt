@@ -1,8 +1,8 @@
-package com.example.finance_management_system.tests.goal
+package com.tetrova_flowledger.tests.goal
 
-import com.example.finance_management_system.model.GoalOverview
-import com.example.finance_management_system.repository.GoalRepository
-import com.example.finance_management_system.viewmodel.GoalViewModel
+import com.tetrova_flowledger.model.GoalOverview
+import com.tetrova_flowledger.repository.GoalRepository
+import com.tetrova_flowledger.viewmodel.GoalViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

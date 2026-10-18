@@ -1,7 +1,7 @@
-package com.example.finance_management_system.data.currency
+package com.tetrova_flowledger.data.currency
 
-import com.example.finance_management_system.data.preferences.UserPreferencesRepository
-import com.example.finance_management_system.model.supportedCurrencies
+import com.tetrova_flowledger.data.preferences.UserPreferencesRepository
+import com.tetrova_flowledger.model.supportedCurrencies
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers

@@ -1,13 +1,13 @@
-package com.example.finance_management_system;
+package com.tetrova_flowledger;
 
 import android.app.Application
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.finance_management_system.data.StartupCoordinator
-import com.example.finance_management_system.data.notification.BillReminderWorker
-import com.example.finance_management_system.data.notification.NotificationHelper
+import com.tetrova_flowledger.data.StartupCoordinator
+import com.tetrova_flowledger.data.notification.BillReminderWorker
+import com.tetrova_flowledger.data.notification.NotificationHelper
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

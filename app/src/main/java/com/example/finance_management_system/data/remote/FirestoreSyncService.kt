@@ -1,14 +1,14 @@
-package com.example.finance_management_system.data.remote
+package com.tetrova_flowledger.data.remote
 
-import com.example.finance_management_system.data.local.dao.ExpenseDao
-import com.example.finance_management_system.data.local.dao.GoalDao
-import com.example.finance_management_system.data.local.dao.IncomeDao
-import com.example.finance_management_system.data.local.entity.ExpenseEntity
-import com.example.finance_management_system.data.local.entity.GoalEntity
-import com.example.finance_management_system.data.local.entity.IncomeEntity
-import com.example.finance_management_system.data.remote.model.FirestoreExpense
-import com.example.finance_management_system.data.remote.model.FirestoreGoal
-import com.example.finance_management_system.data.remote.model.FirestoreIncome
+import com.tetrova_flowledger.data.local.dao.ExpenseDao
+import com.tetrova_flowledger.data.local.dao.GoalDao
+import com.tetrova_flowledger.data.local.dao.IncomeDao
+import com.tetrova_flowledger.data.local.entity.ExpenseEntity
+import com.tetrova_flowledger.data.local.entity.GoalEntity
+import com.tetrova_flowledger.data.local.entity.IncomeEntity
+import com.tetrova_flowledger.data.remote.model.FirestoreExpense
+import com.tetrova_flowledger.data.remote.model.FirestoreGoal
+import com.tetrova_flowledger.data.remote.model.FirestoreIncome
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue

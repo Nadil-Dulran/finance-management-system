@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.components
+package com.tetrova_flowledger.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,11 +30,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.model.TransactionItem
-import com.example.finance_management_system.model.TransactionType
-import com.example.finance_management_system.ui.theme.AuroraMint
-import com.example.finance_management_system.ui.theme.CoralRed
-import com.example.finance_management_system.ui.theme.Glass
+import com.tetrova_flowledger.model.TransactionItem
+import com.tetrova_flowledger.model.TransactionType
+import com.tetrova_flowledger.ui.theme.AuroraMint
+import com.tetrova_flowledger.ui.theme.CoralRed
+import com.tetrova_flowledger.ui.theme.Glass
 
 @Composable
 fun GradientHeroCard(

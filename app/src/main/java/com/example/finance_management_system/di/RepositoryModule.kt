@@ -1,13 +1,13 @@
-package com.example.finance_management_system.di
+package com.tetrova_flowledger.di
 
-import com.example.finance_management_system.data.session.AuthPostLoginCoordinator
-import com.example.finance_management_system.data.session.DefaultAuthPostLoginCoordinator
-import com.example.finance_management_system.repository.AuthRepository
-import com.example.finance_management_system.repository.FinanceRepository
-import com.example.finance_management_system.repository.GoalRepository
-import com.example.finance_management_system.repository.firebase.FirebaseAuthRepository
-import com.example.finance_management_system.repository.local.LocalFinanceRepository
-import com.example.finance_management_system.repository.local.LocalGoalRepository
+import com.tetrova_flowledger.data.session.AuthPostLoginCoordinator
+import com.tetrova_flowledger.data.session.DefaultAuthPostLoginCoordinator
+import com.tetrova_flowledger.repository.AuthRepository
+import com.tetrova_flowledger.repository.FinanceRepository
+import com.tetrova_flowledger.repository.GoalRepository
+import com.tetrova_flowledger.repository.firebase.FirebaseAuthRepository
+import com.tetrova_flowledger.repository.local.LocalFinanceRepository
+import com.tetrova_flowledger.repository.local.LocalGoalRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

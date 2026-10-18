@@ -1,7 +1,7 @@
-package com.example.finance_management_system.util
+package com.tetrova_flowledger.util
 
-import com.example.finance_management_system.data.currency.CurrencyConverter
-import com.example.finance_management_system.model.GoalOverview
+import com.tetrova_flowledger.data.currency.CurrencyConverter
+import com.tetrova_flowledger.model.GoalOverview
 
 private fun parseAmountFromLabel(label: String): Double {
     // Remove any non-numeric characters except dot and minus, e.g. "LKR 1,234.56" -> "1234.56"

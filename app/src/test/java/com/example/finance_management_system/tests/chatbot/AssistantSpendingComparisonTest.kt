@@ -1,12 +1,12 @@
-package com.example.finance_management_system.tests.chatbot
+package com.tetrova_flowledger.tests.chatbot
 
-import com.example.finance_management_system.assistant.AssistantConversationMemory
-import com.example.finance_management_system.assistant.AssistantEngine
-import com.example.finance_management_system.assistant.AssistantFinanceSnapshot
-import com.example.finance_management_system.assistant.AssistantTopic
-import com.example.finance_management_system.assistant.ComparisonMetric
-import com.example.finance_management_system.assistant.ComparisonPeriod
-import com.example.finance_management_system.data.local.entity.ExpenseEntity
+import com.tetrova_flowledger.assistant.AssistantConversationMemory
+import com.tetrova_flowledger.assistant.AssistantEngine
+import com.tetrova_flowledger.assistant.AssistantFinanceSnapshot
+import com.tetrova_flowledger.assistant.AssistantTopic
+import com.tetrova_flowledger.assistant.ComparisonMetric
+import com.tetrova_flowledger.assistant.ComparisonPeriod
+import com.tetrova_flowledger.data.local.entity.ExpenseEntity
 import java.util.Calendar
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

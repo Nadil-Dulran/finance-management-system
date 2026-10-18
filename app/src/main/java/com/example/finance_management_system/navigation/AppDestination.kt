@@ -1,4 +1,4 @@
-package com.example.finance_management_system.navigation
+package com.tetrova_flowledger.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -8,7 +8,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.finance_management_system.R
+import com.tetrova_flowledger.R
 
 sealed class AppDestination(val route: String) {
     data object Landing : AppDestination("landing")

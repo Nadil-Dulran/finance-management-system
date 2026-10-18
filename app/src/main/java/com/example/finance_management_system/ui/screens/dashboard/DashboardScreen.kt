@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.screens.dashboard
+package com.tetrova_flowledger.ui.screens.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,16 +21,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.R
-import com.example.finance_management_system.ui.components.AppScaffold
-import com.example.finance_management_system.ui.components.EmptyStateCard
-import com.example.finance_management_system.ui.components.GradientHeroCard
-import com.example.finance_management_system.ui.components.HorizontalBarChartCard
-import com.example.finance_management_system.ui.components.MetricCard
-import com.example.finance_management_system.ui.components.PieChartCard
-import com.example.finance_management_system.ui.components.QuickActionCard
-import com.example.finance_management_system.ui.components.TransactionHighlightRow
-import com.example.finance_management_system.ui.state.DashboardUiState
+import com.tetrova_flowledger.R
+import com.tetrova_flowledger.ui.components.AppScaffold
+import com.tetrova_flowledger.ui.components.EmptyStateCard
+import com.tetrova_flowledger.ui.components.GradientHeroCard
+import com.tetrova_flowledger.ui.components.HorizontalBarChartCard
+import com.tetrova_flowledger.ui.components.MetricCard
+import com.tetrova_flowledger.ui.components.PieChartCard
+import com.tetrova_flowledger.ui.components.QuickActionCard
+import com.tetrova_flowledger.ui.components.TransactionHighlightRow
+import com.tetrova_flowledger.ui.state.DashboardUiState
 
 @Composable
 fun DashboardScreen(
@@ -127,8 +127,8 @@ fun DashboardScreen(
                 HorizontalBarChartCard(
                     title = "Income vs expenses",
                     items = listOfNotNull(
-                        incomeSummary?.let { com.example.finance_management_system.model.ChartDatum("Income", 1.0, it.amountLabel) },
-                        expenseSummary?.let { com.example.finance_management_system.model.ChartDatum("Expenses", 1.0, it.amountLabel) },
+                        incomeSummary?.let { com.tetrova_flowledger.model.ChartDatum("Income", 1.0, it.amountLabel) },
+                        expenseSummary?.let { com.tetrova_flowledger.model.ChartDatum("Expenses", 1.0, it.amountLabel) },
                     ),
                 )
             }

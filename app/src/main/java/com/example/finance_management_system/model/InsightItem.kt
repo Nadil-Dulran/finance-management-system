@@ -1,4 +1,4 @@
-package com.example.finance_management_system.model
+package com.tetrova_flowledger.model
 
 data class InsightItem(
     val title: String,

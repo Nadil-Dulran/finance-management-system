@@ -1,4 +1,4 @@
-package com.example.finance_management_system.tests
+package com.tetrova_flowledger.tests
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -11,6 +11,6 @@ class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.finance_management_system", appContext.packageName)
+        assertEquals("com.tetrova_flowledger", appContext.packageName)
     }
 }

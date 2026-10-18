@@ -1,10 +1,10 @@
-package com.example.finance_management_system.ui.state
+package com.tetrova_flowledger.ui.state
 
-import com.example.finance_management_system.model.SummaryCard
-import com.example.finance_management_system.model.ChartDatum
-import com.example.finance_management_system.model.GoalOverview
-import com.example.finance_management_system.model.InsightItem
-import com.example.finance_management_system.model.TransactionItem
+import com.tetrova_flowledger.model.SummaryCard
+import com.tetrova_flowledger.model.ChartDatum
+import com.tetrova_flowledger.model.GoalOverview
+import com.tetrova_flowledger.model.InsightItem
+import com.tetrova_flowledger.model.TransactionItem
 
 data class DashboardUiState(
     val welcomeTitle: String = "Money overview",

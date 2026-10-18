@@ -1,12 +1,12 @@
-package com.example.finance_management_system.di
+package com.tetrova_flowledger.di
 
 import android.content.Context
-import com.example.finance_management_system.data.local.FinanceDatabase
-import com.example.finance_management_system.data.local.dao.DetectedTransactionDao
-import com.example.finance_management_system.data.local.dao.ExpenseDao
-import com.example.finance_management_system.data.local.dao.GoalDao
-import com.example.finance_management_system.data.local.dao.IncomeDao
-import com.example.finance_management_system.data.local.dao.SyncQueueDao
+import com.tetrova_flowledger.data.local.FinanceDatabase
+import com.tetrova_flowledger.data.local.dao.DetectedTransactionDao
+import com.tetrova_flowledger.data.local.dao.ExpenseDao
+import com.tetrova_flowledger.data.local.dao.GoalDao
+import com.tetrova_flowledger.data.local.dao.IncomeDao
+import com.tetrova_flowledger.data.local.dao.SyncQueueDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

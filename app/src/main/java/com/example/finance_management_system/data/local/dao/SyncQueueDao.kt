@@ -1,10 +1,10 @@
-package com.example.finance_management_system.data.local.dao
+package com.tetrova_flowledger.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.finance_management_system.data.local.entity.SyncQueueEntity
+import com.tetrova_flowledger.data.local.entity.SyncQueueEntity
 
 @Dao
 interface SyncQueueDao {

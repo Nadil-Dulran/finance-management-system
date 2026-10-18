@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.theme
+package com.tetrova_flowledger.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

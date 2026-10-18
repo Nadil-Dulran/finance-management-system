@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:476845779069:android:070dbaa015f148bc002914",
         "android_client_info": {
-          "package_name": "com.example.finance_management_system"
+          "package_name": "com.tetrova_flowledger"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "476845779069-0j2cccil91kt2m896no8a5p64h080hbb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.finance_management_system",
+            "package_name": "com.tetrova_flowledger",
             "certificate_hash": "8214a451b1061040cd62e65922ff62471732c8a4"
           }
         },

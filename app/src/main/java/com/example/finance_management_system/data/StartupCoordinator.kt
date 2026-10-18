@@ -1,15 +1,15 @@
-package com.example.finance_management_system.data
+package com.tetrova_flowledger.data
 
-import com.example.finance_management_system.data.currency.ExchangeRateRepository
-import com.example.finance_management_system.data.remote.FirestoreSyncService
-import com.example.finance_management_system.data.preferences.UserPreferencesRepository
-import com.example.finance_management_system.data.session.AuthSessionManager
-import com.example.finance_management_system.data.sync.SyncQueueManager
-import com.example.finance_management_system.repository.AuthUser
-import com.example.finance_management_system.repository.FinanceRepository
-import com.example.finance_management_system.repository.GoalRepository
+import com.tetrova_flowledger.data.currency.ExchangeRateRepository
+import com.tetrova_flowledger.data.remote.FirestoreSyncService
+import com.tetrova_flowledger.data.preferences.UserPreferencesRepository
+import com.tetrova_flowledger.data.session.AuthSessionManager
+import com.tetrova_flowledger.data.sync.SyncQueueManager
+import com.tetrova_flowledger.repository.AuthUser
+import com.tetrova_flowledger.repository.FinanceRepository
+import com.tetrova_flowledger.repository.GoalRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.example.finance_management_system.navigation.AppDestination
+import com.tetrova_flowledger.navigation.AppDestination
 import javax.inject.Inject
 import javax.inject.Singleton
 import java.util.concurrent.atomic.AtomicBoolean

@@ -1,4 +1,4 @@
-package com.example.finance_management_system.data.remote.model
+package com.tetrova_flowledger.data.remote.model
 
 import com.google.firebase.firestore.PropertyName
 

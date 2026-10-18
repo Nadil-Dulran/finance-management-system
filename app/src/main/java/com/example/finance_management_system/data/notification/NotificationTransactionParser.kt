@@ -1,6 +1,6 @@
-package com.example.finance_management_system.data.notification
+package com.tetrova_flowledger.data.notification
 
-import com.example.finance_management_system.data.local.entity.DetectedTransactionEntity
+import com.tetrova_flowledger.data.local.entity.DetectedTransactionEntity
 import java.util.Locale
 import java.util.UUID
 

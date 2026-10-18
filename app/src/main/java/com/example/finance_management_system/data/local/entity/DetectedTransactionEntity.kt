@@ -1,4 +1,4 @@
-package com.example.finance_management_system.data.local.entity
+package com.tetrova_flowledger.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

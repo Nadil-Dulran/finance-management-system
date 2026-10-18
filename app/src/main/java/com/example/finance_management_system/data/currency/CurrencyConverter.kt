@@ -1,4 +1,4 @@
-package com.example.finance_management_system.data.currency
+package com.tetrova_flowledger.data.currency
 
 import java.util.Locale
 

@@ -1,4 +1,4 @@
-package com.example.finance_management_system.di
+package com.tetrova_flowledger.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

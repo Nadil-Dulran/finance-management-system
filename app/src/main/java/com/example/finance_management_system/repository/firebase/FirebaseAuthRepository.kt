@@ -1,12 +1,12 @@
-package com.example.finance_management_system.repository.firebase
+package com.tetrova_flowledger.repository.firebase
 
 import android.content.Context
 import android.util.Log
-import com.example.finance_management_system.data.preferences.UserPreferencesRepository
-import com.example.finance_management_system.data.session.AuthSessionManager
-import com.example.finance_management_system.model.AppDefaults
-import com.example.finance_management_system.repository.AuthRepository
-import com.example.finance_management_system.repository.AuthUser
+import com.tetrova_flowledger.data.preferences.UserPreferencesRepository
+import com.tetrova_flowledger.data.session.AuthSessionManager
+import com.tetrova_flowledger.model.AppDefaults
+import com.tetrova_flowledger.repository.AuthRepository
+import com.tetrova_flowledger.repository.AuthUser
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException

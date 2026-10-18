@@ -1,4 +1,4 @@
-package com.example.finance_management_system.data.sync
+package com.tetrova_flowledger.data.sync
 
 import android.content.Context
 import androidx.work.BackoffPolicy
@@ -9,12 +9,12 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.finance_management_system.data.local.dao.ExpenseDao
-import com.example.finance_management_system.data.local.dao.GoalDao
-import com.example.finance_management_system.data.local.dao.IncomeDao
-import com.example.finance_management_system.data.local.dao.SyncQueueDao
-import com.example.finance_management_system.data.local.entity.SyncQueueEntity
-import com.example.finance_management_system.data.remote.FirestoreSyncService
+import com.tetrova_flowledger.data.local.dao.ExpenseDao
+import com.tetrova_flowledger.data.local.dao.GoalDao
+import com.tetrova_flowledger.data.local.dao.IncomeDao
+import com.tetrova_flowledger.data.local.dao.SyncQueueDao
+import com.tetrova_flowledger.data.local.entity.SyncQueueEntity
+import com.tetrova_flowledger.data.remote.FirestoreSyncService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

@@ -1,9 +1,9 @@
-package com.example.finance_management_system.tests.auth
+package com.tetrova_flowledger.tests.auth
 
-import com.example.finance_management_system.data.session.AuthPostLoginCoordinator
-import com.example.finance_management_system.repository.AuthRepository
-import com.example.finance_management_system.repository.AuthUser
-import com.example.finance_management_system.viewmodel.AuthViewModel
+import com.tetrova_flowledger.data.session.AuthPostLoginCoordinator
+import com.tetrova_flowledger.repository.AuthRepository
+import com.tetrova_flowledger.repository.AuthUser
+import com.tetrova_flowledger.viewmodel.AuthViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

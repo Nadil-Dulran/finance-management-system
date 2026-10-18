@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.screens.auth
+package com.tetrova_flowledger.ui.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,11 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.R
-import com.example.finance_management_system.ui.components.AppScaffold
-import com.example.finance_management_system.ui.components.FrostedBadge
-import com.example.finance_management_system.ui.components.GradientHeroCard
-import com.example.finance_management_system.ui.state.AuthUiState
+import com.tetrova_flowledger.R
+import com.tetrova_flowledger.ui.components.AppScaffold
+import com.tetrova_flowledger.ui.components.FrostedBadge
+import com.tetrova_flowledger.ui.components.GradientHeroCard
+import com.tetrova_flowledger.ui.state.AuthUiState
 
 @Composable
 fun ResetPasswordScreen(

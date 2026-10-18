@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.screens.settings
+package com.tetrova_flowledger.ui.screens.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +18,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.R
-import com.example.finance_management_system.model.supportedCurrencies
-import com.example.finance_management_system.ui.components.AppScaffold
-import com.example.finance_management_system.ui.components.FrostedBadge
-import com.example.finance_management_system.ui.components.DropdownField
-import com.example.finance_management_system.ui.components.GradientHeroCard
-import com.example.finance_management_system.ui.state.SettingsUiState
+import com.tetrova_flowledger.R
+import com.tetrova_flowledger.model.supportedCurrencies
+import com.tetrova_flowledger.ui.components.AppScaffold
+import com.tetrova_flowledger.ui.components.FrostedBadge
+import com.tetrova_flowledger.ui.components.DropdownField
+import com.tetrova_flowledger.ui.components.GradientHeroCard
+import com.tetrova_flowledger.ui.state.SettingsUiState
 
 @Composable
 fun SettingsScreen(

@@ -1,12 +1,12 @@
-package com.example.finance_management_system.tests.income
+package com.tetrova_flowledger.tests.income
 
-import com.example.finance_management_system.model.AppDefaults
-import com.example.finance_management_system.model.ChartDatum
-import com.example.finance_management_system.model.DetectedTransactionItem
-import com.example.finance_management_system.model.SummaryCard
-import com.example.finance_management_system.model.TransactionItem
-import com.example.finance_management_system.repository.FinanceRepository
-import com.example.finance_management_system.viewmodel.AddIncomeViewModel
+import com.tetrova_flowledger.model.AppDefaults
+import com.tetrova_flowledger.model.ChartDatum
+import com.tetrova_flowledger.model.DetectedTransactionItem
+import com.tetrova_flowledger.model.SummaryCard
+import com.tetrova_flowledger.model.TransactionItem
+import com.tetrova_flowledger.repository.FinanceRepository
+import com.tetrova_flowledger.viewmodel.AddIncomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

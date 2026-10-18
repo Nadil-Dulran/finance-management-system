@@ -1,11 +1,11 @@
-package com.example.finance_management_system.data.local.dao
+package com.tetrova_flowledger.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.finance_management_system.data.local.entity.ExpenseEntity
+import com.tetrova_flowledger.data.local.entity.ExpenseEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

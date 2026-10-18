@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.components
+package com.tetrova_flowledger.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.model.ChartDatum
+import com.tetrova_flowledger.model.ChartDatum
 
 @Composable
 fun HorizontalBarChartCard(

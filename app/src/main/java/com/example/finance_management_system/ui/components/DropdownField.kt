@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.components
+package com.tetrova_flowledger.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem

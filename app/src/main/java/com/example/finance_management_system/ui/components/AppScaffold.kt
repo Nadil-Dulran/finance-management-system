@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.components
+package com.tetrova_flowledger.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -48,7 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.navigation.bottomNavItems
+import com.tetrova_flowledger.navigation.bottomNavItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

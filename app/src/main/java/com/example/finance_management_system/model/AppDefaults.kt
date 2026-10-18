@@ -1,4 +1,4 @@
-package com.example.finance_management_system.model
+package com.tetrova_flowledger.model
 
 object AppDefaults {
     const val DEFAULT_INCOME_SOURCE = "Salary"

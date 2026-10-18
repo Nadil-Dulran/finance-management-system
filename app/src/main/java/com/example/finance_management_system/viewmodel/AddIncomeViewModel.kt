@@ -1,10 +1,10 @@
-package com.example.finance_management_system.viewmodel
+package com.tetrova_flowledger.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.model.AppDefaults
-import com.example.finance_management_system.repository.FinanceRepository
-import com.example.finance_management_system.ui.state.EntryFormUiState
+import com.tetrova_flowledger.model.AppDefaults
+import com.tetrova_flowledger.repository.FinanceRepository
+import com.tetrova_flowledger.ui.state.EntryFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.state
+package com.tetrova_flowledger.ui.state
 
 data class SettingsUiState(
     val preferredCurrency: String = "LKR",

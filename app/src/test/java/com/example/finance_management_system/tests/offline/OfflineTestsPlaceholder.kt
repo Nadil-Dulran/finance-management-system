@@ -1,4 +1,4 @@
-package com.example.finance_management_system.tests.offline
+package com.tetrova_flowledger.tests.offline
 
 import org.junit.Ignore
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.example.finance_management_system.data.notification
+package com.tetrova_flowledger.data.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

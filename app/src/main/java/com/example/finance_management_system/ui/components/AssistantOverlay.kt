@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.components
+package com.tetrova_flowledger.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -49,9 +49,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.assistant.AssistantMessage
-import com.example.finance_management_system.assistant.AssistantMessageRole
-import com.example.finance_management_system.assistant.AssistantUiState
+import com.tetrova_flowledger.assistant.AssistantMessage
+import com.tetrova_flowledger.assistant.AssistantMessageRole
+import com.tetrova_flowledger.assistant.AssistantUiState
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)

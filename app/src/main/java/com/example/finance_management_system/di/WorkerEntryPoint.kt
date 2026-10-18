@@ -1,7 +1,7 @@
-package com.example.finance_management_system.di
+package com.tetrova_flowledger.di
 
-import com.example.finance_management_system.data.sync.SyncQueueManager
-import com.example.finance_management_system.repository.FinanceRepository
+import com.tetrova_flowledger.data.sync.SyncQueueManager
+import com.tetrova_flowledger.repository.FinanceRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

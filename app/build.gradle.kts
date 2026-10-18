@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.finance_management_system"
+    namespace = "com.tetrova_flowledger"
     compileSdk = 36
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.finance_management_system"
+        applicationId = "com.tetrova_flowledger"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

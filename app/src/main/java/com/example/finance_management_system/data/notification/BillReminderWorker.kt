@@ -1,9 +1,9 @@
-package com.example.finance_management_system.data.notification
+package com.tetrova_flowledger.data.notification
 
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.finance_management_system.di.WorkerEntryPoint
+import com.tetrova_flowledger.di.WorkerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
 class BillReminderWorker(

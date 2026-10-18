@@ -1,8 +1,8 @@
-package com.example.finance_management_system.data.notification
+package com.tetrova_flowledger.data.notification
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import com.example.finance_management_system.repository.FinanceRepository
+import com.tetrova_flowledger.repository.FinanceRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope

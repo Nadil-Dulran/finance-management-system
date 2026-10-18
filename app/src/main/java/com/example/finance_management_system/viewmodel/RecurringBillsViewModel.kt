@@ -1,9 +1,9 @@
-package com.example.finance_management_system.viewmodel
+package com.tetrova_flowledger.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.model.TransactionItem
-import com.example.finance_management_system.repository.FinanceRepository
+import com.tetrova_flowledger.model.TransactionItem
+import com.tetrova_flowledger.repository.FinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted

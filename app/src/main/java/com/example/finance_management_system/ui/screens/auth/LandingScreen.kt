@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.screens.auth
+package com.tetrova_flowledger.ui.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.ui.components.AppScaffold
+import com.tetrova_flowledger.ui.components.AppScaffold
 
 @Composable
 fun LandingScreen(

@@ -1,17 +1,17 @@
-package com.example.finance_management_system.viewmodel
+package com.tetrova_flowledger.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finance_management_system.repository.GoalRepository
-import com.example.finance_management_system.repository.local.LocalGoalRepository
-import com.example.finance_management_system.ui.state.GoalUiState
+import com.tetrova_flowledger.repository.GoalRepository
+import com.tetrova_flowledger.repository.local.LocalGoalRepository
+import com.tetrova_flowledger.ui.state.GoalUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import com.example.finance_management_system.util.aggregateGoalsOverview
+import com.tetrova_flowledger.util.aggregateGoalsOverview
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

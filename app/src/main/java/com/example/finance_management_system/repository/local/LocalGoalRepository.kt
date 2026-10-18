@@ -1,15 +1,15 @@
-package com.example.finance_management_system.repository.local
+package com.tetrova_flowledger.repository.local
 
-import com.example.finance_management_system.data.currency.CurrencyConverter
-import com.example.finance_management_system.data.currency.ExchangeRateRepository
-import com.example.finance_management_system.data.local.dao.GoalDao
-import com.example.finance_management_system.data.local.entity.GoalEntity
-import com.example.finance_management_system.data.preferences.UserPreferencesRepository
-import com.example.finance_management_system.data.session.AuthSessionManager
-import com.example.finance_management_system.data.sync.SyncEntityType
-import com.example.finance_management_system.data.sync.SyncQueueManager
-import com.example.finance_management_system.model.GoalOverview
-import com.example.finance_management_system.repository.GoalRepository
+import com.tetrova_flowledger.data.currency.CurrencyConverter
+import com.tetrova_flowledger.data.currency.ExchangeRateRepository
+import com.tetrova_flowledger.data.local.dao.GoalDao
+import com.tetrova_flowledger.data.local.entity.GoalEntity
+import com.tetrova_flowledger.data.preferences.UserPreferencesRepository
+import com.tetrova_flowledger.data.session.AuthSessionManager
+import com.tetrova_flowledger.data.sync.SyncEntityType
+import com.tetrova_flowledger.data.sync.SyncQueueManager
+import com.tetrova_flowledger.model.GoalOverview
+import com.tetrova_flowledger.repository.GoalRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi

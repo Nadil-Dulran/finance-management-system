@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui
+package com.tetrova_flowledger.ui
 
 
 import androidx.compose.foundation.layout.Box
@@ -11,11 +11,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.finance_management_system.data.StartupCoordinator
-import com.example.finance_management_system.navigation.AppDestination
-import com.example.finance_management_system.navigation.FinancialTrackerNavHost
-import com.example.finance_management_system.ui.components.AssistantOverlay
-import com.example.finance_management_system.viewmodel.AssistantViewModel
+import com.tetrova_flowledger.data.StartupCoordinator
+import com.tetrova_flowledger.navigation.AppDestination
+import com.tetrova_flowledger.navigation.FinancialTrackerNavHost
+import com.tetrova_flowledger.ui.components.AssistantOverlay
+import com.tetrova_flowledger.viewmodel.AssistantViewModel
 
 @Composable
 fun FinancialTrackerApp(startupCoordinator: StartupCoordinator) {

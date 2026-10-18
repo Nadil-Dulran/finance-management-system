@@ -1,4 +1,4 @@
-package com.example.finance_management_system.tests
+package com.tetrova_flowledger.tests
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

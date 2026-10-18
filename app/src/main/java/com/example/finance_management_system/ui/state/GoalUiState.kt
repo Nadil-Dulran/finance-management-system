@@ -1,6 +1,6 @@
-package com.example.finance_management_system.ui.state
+package com.tetrova_flowledger.ui.state
 
-import com.example.finance_management_system.model.GoalOverview
+import com.tetrova_flowledger.model.GoalOverview
 
 data class GoalUiState(
     val overview: GoalOverview? = null,

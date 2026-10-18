@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.screens.transactions
+package com.tetrova_flowledger.ui.screens.transactions
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,21 +32,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.R
-import com.example.finance_management_system.model.AppDefaults
-import com.example.finance_management_system.model.DetectedTransactionItem
-import com.example.finance_management_system.model.InsightItem
-import com.example.finance_management_system.model.TransactionItem
-import com.example.finance_management_system.model.TransactionType
-import com.example.finance_management_system.model.expenseCategories
-import com.example.finance_management_system.model.incomeSources
-import com.example.finance_management_system.model.paymentMethods
-import com.example.finance_management_system.model.spendingTypes
-import com.example.finance_management_system.model.supportedCurrencies
-import com.example.finance_management_system.ui.components.AppScaffold
-import com.example.finance_management_system.ui.components.DropdownField
-import com.example.finance_management_system.ui.components.FrostedBadge
-import com.example.finance_management_system.ui.components.GradientHeroCard
+import com.tetrova_flowledger.R
+import com.tetrova_flowledger.model.AppDefaults
+import com.tetrova_flowledger.model.DetectedTransactionItem
+import com.tetrova_flowledger.model.InsightItem
+import com.tetrova_flowledger.model.TransactionItem
+import com.tetrova_flowledger.model.TransactionType
+import com.tetrova_flowledger.model.expenseCategories
+import com.tetrova_flowledger.model.incomeSources
+import com.tetrova_flowledger.model.paymentMethods
+import com.tetrova_flowledger.model.spendingTypes
+import com.tetrova_flowledger.model.supportedCurrencies
+import com.tetrova_flowledger.ui.components.AppScaffold
+import com.tetrova_flowledger.ui.components.DropdownField
+import com.tetrova_flowledger.ui.components.FrostedBadge
+import com.tetrova_flowledger.ui.components.GradientHeroCard
 
 @Composable
 fun TransactionsScreen(

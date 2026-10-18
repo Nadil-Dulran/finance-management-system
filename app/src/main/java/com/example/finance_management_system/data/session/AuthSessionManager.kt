@@ -1,6 +1,6 @@
-package com.example.finance_management_system.data.session
+package com.tetrova_flowledger.data.session
 
-import com.example.finance_management_system.repository.AuthUser
+import com.tetrova_flowledger.repository.AuthUser
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow

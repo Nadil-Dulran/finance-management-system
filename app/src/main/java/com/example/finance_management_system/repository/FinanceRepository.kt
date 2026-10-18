@@ -1,9 +1,9 @@
-package com.example.finance_management_system.repository
+package com.tetrova_flowledger.repository
 
-import com.example.finance_management_system.model.SummaryCard
-import com.example.finance_management_system.model.ChartDatum
-import com.example.finance_management_system.model.DetectedTransactionItem
-import com.example.finance_management_system.model.TransactionItem
+import com.tetrova_flowledger.model.SummaryCard
+import com.tetrova_flowledger.model.ChartDatum
+import com.tetrova_flowledger.model.DetectedTransactionItem
+import com.tetrova_flowledger.model.TransactionItem
 import kotlinx.coroutines.flow.Flow
 
 interface FinanceRepository {

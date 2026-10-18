@@ -1,4 +1,4 @@
-package com.example.finance_management_system.repository
+package com.tetrova_flowledger.repository
 
 data class AuthUser(
     val uid: String,

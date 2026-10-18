@@ -1,6 +1,6 @@
-package com.example.finance_management_system.repository
+package com.tetrova_flowledger.repository
 
-import com.example.finance_management_system.model.GoalOverview
+import com.tetrova_flowledger.model.GoalOverview
 import kotlinx.coroutines.flow.Flow
 
 interface GoalRepository {

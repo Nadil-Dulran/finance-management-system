@@ -1,8 +1,8 @@
-package com.example.finance_management_system.assistant
+package com.tetrova_flowledger.assistant
 
-import com.example.finance_management_system.data.local.entity.ExpenseEntity
-import com.example.finance_management_system.data.local.entity.GoalEntity
-import com.example.finance_management_system.data.local.entity.IncomeEntity
+import com.tetrova_flowledger.data.local.entity.ExpenseEntity
+import com.tetrova_flowledger.data.local.entity.GoalEntity
+import com.tetrova_flowledger.data.local.entity.IncomeEntity
 
 enum class ComparisonMetric {
     EXPENSES,

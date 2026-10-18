@@ -1,4 +1,4 @@
-package com.example.finance_management_system.ui.screens.addexpense
+package com.tetrova_flowledger.ui.screens.addexpense
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDownward
@@ -20,17 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finance_management_system.R
-import com.example.finance_management_system.model.expenseCategories
-import com.example.finance_management_system.model.paymentMethods
-import com.example.finance_management_system.model.recurrenceOptions
-import com.example.finance_management_system.model.spendingTypes
-import com.example.finance_management_system.model.supportedCurrencies
-import com.example.finance_management_system.ui.components.AppScaffold
-import com.example.finance_management_system.ui.components.DropdownField
-import com.example.finance_management_system.ui.components.FrostedBadge
-import com.example.finance_management_system.ui.components.GradientHeroCard
-import com.example.finance_management_system.ui.state.EntryFormUiState
+import com.tetrova_flowledger.R
+import com.tetrova_flowledger.model.expenseCategories
+import com.tetrova_flowledger.model.paymentMethods
+import com.tetrova_flowledger.model.recurrenceOptions
+import com.tetrova_flowledger.model.spendingTypes
+import com.tetrova_flowledger.model.supportedCurrencies
+import com.tetrova_flowledger.ui.components.AppScaffold
+import com.tetrova_flowledger.ui.components.DropdownField
+import com.tetrova_flowledger.ui.components.FrostedBadge
+import com.tetrova_flowledger.ui.components.GradientHeroCard
+import com.tetrova_flowledger.ui.state.EntryFormUiState
 
 @Composable
 fun AddExpenseScreen(

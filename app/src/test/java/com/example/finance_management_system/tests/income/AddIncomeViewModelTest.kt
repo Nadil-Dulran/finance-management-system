@@ -129,6 +129,7 @@ class AddIncomeViewModelTest {
         }
 
         override fun observeDashboardSummary(): Flow<List<SummaryCard>> = flowOf(emptyList())
+        override fun observeAvailableFreeCash(): Flow<Double> = flowOf(0.0)
         override fun observeExpenseChart(): Flow<List<ChartDatum>> = flowOf(emptyList())
         override fun observeIncomeChart(): Flow<List<ChartDatum>> = flowOf(emptyList())
         override fun observeRecentTransactions(): Flow<List<TransactionItem>> = flowOf(emptyList())

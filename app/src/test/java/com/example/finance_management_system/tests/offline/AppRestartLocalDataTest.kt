@@ -191,6 +191,7 @@ class AppRestartLocalDataTest {
         val recentTransactionsFlow = MutableStateFlow(recentTransactions)
 
         override fun observeDashboardSummary(): Flow<List<SummaryCard>> = summaryFlow
+        override fun observeAvailableFreeCash(): Flow<Double> = flowOf(0.0)
         override fun observeExpenseChart(): Flow<List<ChartDatum>> = expenseChartFlow
         override fun observeIncomeChart(): Flow<List<ChartDatum>> = incomeChartFlow
         override fun observeRecentTransactions(): Flow<List<TransactionItem>> = recentTransactionsFlow

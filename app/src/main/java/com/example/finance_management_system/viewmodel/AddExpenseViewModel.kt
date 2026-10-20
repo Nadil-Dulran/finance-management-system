@@ -10,17 +10,30 @@ import com.tetrova_flowledger.ui.state.EntryFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
-class AddExpenseViewModel @Inject constructor(
+class AddExpenseViewModel private constructor(
     private val financeRepository: FinanceRepository,
-    private val exchangeRateRepository: ExchangeRateRepository,
+    private val ratesToLkr: Flow<Map<String, Double>>,
 ) : ViewModel() {
+    @Inject
+    constructor(
+        financeRepository: FinanceRepository,
+        exchangeRateRepository: ExchangeRateRepository,
+    ) : this(financeRepository, exchangeRateRepository.ratesToLkr)
+
+    internal constructor(financeRepository: FinanceRepository) : this(
+        financeRepository,
+        flowOf(mapOf("LKR" to 1.0)),
+    )
+
     private var availableFreeCashLkr = 0.0
     private var amountTouched = false
     private var currentRatesToLkr: Map<String, Double> = emptyMap()
@@ -46,7 +59,7 @@ class AddExpenseViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            exchangeRateRepository.ratesToLkr.collectLatest { rates ->
+            ratesToLkr.collectLatest { rates ->
                 currentRatesToLkr = rates
                 refreshAmountValidation()
             }

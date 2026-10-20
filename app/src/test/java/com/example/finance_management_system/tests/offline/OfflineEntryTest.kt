@@ -156,6 +156,7 @@ class OfflineEntryTest {
         )
 
         override fun observeDashboardSummary(): Flow<List<SummaryCard>> = summaryFlow
+        override fun observeAvailableFreeCash(): Flow<Double> = flowOf(0.0)
 
         override fun observeExpenseChart(): Flow<List<ChartDatum>> = expenseChartFlow
 
